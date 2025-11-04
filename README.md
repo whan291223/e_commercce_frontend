@@ -6,3 +6,5 @@
 react router dom -> make application more dynamic -> don't need to refersh a page
 
 axious -> provide asyncchornus
+
+try to create nav bar to toggle between admin view and customer view
