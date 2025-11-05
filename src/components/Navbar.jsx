@@ -1,7 +1,7 @@
 // top panel of the website
 
 import React from "react";
-import {Navlink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function Navbar() {
     return (
@@ -10,8 +10,8 @@ function Navbar() {
             E-Com-react
         </div>
         <div className="nav-links">
-            <Navlink to="/">Customer View</Navlink>
-            <Navlink to="/admin">Admin View</Navlink>
+            <NavLink to="/">Customer View</NavLink>
+            <NavLink to="/admin">Admin View</NavLink>
         </div>
 
         </nav>
