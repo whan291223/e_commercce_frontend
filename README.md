@@ -25,3 +25,8 @@ const [stateVariable, setStateVariable] = useState(initialValue)
 2. Do some action
 3. Update using setter
 4. Without refresh, web app is updated
+
+### props
+
+props is Properties
+1. props are how data and functions are passed down form a parent component to is child components
