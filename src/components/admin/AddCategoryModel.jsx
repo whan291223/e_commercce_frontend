@@ -4,7 +4,7 @@ import React, { useState} from "react";
 
 function AddCategoryModel( { isOpen, onClose, onSuccess }) {
     const [name, setName] = useState('');
-    if (!isOpen) return null;
+    if (!isOpen) return null; //if it already open don't do anything
 
     const handleSubmit = async (e) => {
         e.preventDefault();
