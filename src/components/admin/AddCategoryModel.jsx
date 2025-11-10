@@ -41,8 +41,4 @@ function AddCategoryModel({ isOpen, onClose, onSuccess }) {
             </div>
         </div>
     )
-
-
-
-
 }
