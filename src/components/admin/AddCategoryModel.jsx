@@ -1,6 +1,7 @@
 // TODO 44.07
 
 import React, { useState } from "react";
+import createCategory from "../../api/CategoryApi";
 
 function AddCategoryModel({ isOpen, onClose, onSuccess }) {
     const [name, setName] = useState('');
@@ -9,7 +10,7 @@ function AddCategoryModel({ isOpen, onClose, onSuccess }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // await createCategory(name);
+            await createCategory(name);
             alert('Category created succesfully!')
             setName('');
             onSuccess();
