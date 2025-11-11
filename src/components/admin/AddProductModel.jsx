@@ -53,15 +53,24 @@ function AddProductModal( { isOpen, onClose, onSuccess }) {
         <div className="modal-backdrop">
             <div className="modal-content">
                 <h2>Add new Product</h2>
-                <form onSubmit={handleSubmit}></form>
-                <select name="category_id" value={productData.category_id}></select> //TODO
-                <option value="" disabled>Select a Category</option>
-                {categories.map(cat => (
-
-                ))}
+                <form onSubmit={handleSubmit}>
+                    <select name="category_id" value={productData.category_id} onChange={handleChange} required>
+                        <option value="" disabled>Select a Category</option>
+                        {categories.map(cat => (
+                            <option key={cat.id} value={cat.id}>{cat.name}</option>
+                        ))}
+                    </select> 
+                    <input name="name" value={productData.name} onChange={handleChange} placeholder="Product Name" required/>
+                    <textarea name="description" value={productData.description} onChange={handleChange} placeholder="Description" required></textarea>
+                    <input type="number" name="price" value={productData.price} onChange={handleChange} placeholder="Price" required/>
+                    <div className="modal-actions">
+                        <button type="submit">Create Product</button>
+                        <button type="button" onClick={onClose}>Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
-    )
+    );
 }
 
 
