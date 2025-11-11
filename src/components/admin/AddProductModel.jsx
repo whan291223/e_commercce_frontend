@@ -3,6 +3,7 @@ import createProduct from "../../api/ProductApi";
 import fetchCategory from "../../api/CategoryApi";
 
 function AddProductModal( { isOpen, onClose, onSuccess }) {
+    const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
     const [productData, setProductData] = useState({
         name: '',
@@ -10,7 +11,7 @@ function AddProductModal( { isOpen, onClose, onSuccess }) {
         price: '',
         category_id: '',
     });
-
+    
     useEffect(() => {
         if (isOpen) {
             const loadCategories = async () => {
@@ -35,6 +36,7 @@ function AddProductModal( { isOpen, onClose, onSuccess }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             await createProduct({
                 ...productData,
@@ -46,6 +48,8 @@ function AddProductModal( { isOpen, onClose, onSuccess }) {
         } catch (error) {
             console.error('Failed to created product:', error);
             alert('Failed to creaetd product.');
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -64,7 +68,9 @@ function AddProductModal( { isOpen, onClose, onSuccess }) {
                     <textarea name="description" value={productData.description} onChange={handleChange} placeholder="Description" required></textarea>
                     <input type="number" name="price" value={productData.price} onChange={handleChange} placeholder="Price" required/>
                     <div className="modal-actions">
-                        <button type="submit">Create Product</button>
+                        <button type="submit" disabled={loading}>
+                            {loading? "Creating..." : "Create Product"}
+                        </button>
                         <button type="button" onClick={onClose}>Cancel</button>
                     </div>
                 </form>
@@ -74,3 +80,4 @@ function AddProductModal( { isOpen, onClose, onSuccess }) {
 }
 
 
+export default AddProductModal;
