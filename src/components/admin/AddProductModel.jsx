@@ -16,14 +16,52 @@ function AddProductModal( { isOpen, onClose, onSuccess }) {
             const loadCategories = async () => {
                 const res = await fetchCategory();
                 setCategories(res.data);
-
+                console.log(res)
+                console.log(res.data)
                 if ( res.data.length > 0) {
                     setProductData( pd => ({ ...pd, category_id: res.data[0].id}))
                 }
             };
+            loadCategories();
         }
-    })
+    }, [isOpen]) // made change when is open is changed
 
+    if (!isOpen) return null;
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setProductData(prev => ({ ...prev, [name]: value}));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await createProduct({
+                ...productData,
+                price: parseFloat(productData.price)
+            });
+            alert('Product created successfully!')
+            onSuccess();
+            onClose();
+        } catch (error) {
+            console.error('Failed to created product:', error);
+            alert('Failed to creaetd product.');
+        }
+    };
+
+    return (
+        <div className="modal-backdrop">
+            <div className="modal-content">
+                <h2>Add new Product</h2>
+                <form onSubmit={handleSubmit}></form>
+                <select name="category_id" value={productData.category_id}></select> //TODO
+                <option value="" disabled>Select a Category</option>
+                {categories.map(cat => (
+
+                ))}
+            </div>
+        </div>
+    )
 }
 
 

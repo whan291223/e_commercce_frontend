@@ -30,3 +30,9 @@ const [stateVariable, setStateVariable] = useState(initialValue)
 
 props is Properties
 1. props are how data and functions are passed down form a parent component to is child components
+example p> runs after every render
+### useEffect
+do something when open or close
+1. run everytime
+2. run once
+3. run when ... is changed
