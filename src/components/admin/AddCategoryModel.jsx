@@ -42,3 +42,5 @@ function AddCategoryModel({ isOpen, onClose, onSuccess }) {
         </div>
     )
 }
+
+export default AddCategoryModel;

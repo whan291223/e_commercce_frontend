@@ -1,7 +1,5 @@
-// TODO create admin dashboard
-
 import React, {useState, useEffect, useCallback} from "react";
-import {fetchCategories, fetchProducts} from '../../api/CategoryApi'
+import CategoryApi from '../../api/CategoryApi'
 import AddCategoryModal from './AddCategoryModel'
 import AddProductModal from "./AddProductModel";
 
@@ -13,8 +11,8 @@ function AdminDashboard() {
 
     const updateCounts = useCallback( async () => {
         try {
-            const catRes = await fetchCategory();
-            const prodRes = await fetchAllProduct();
+            const catRes = await CategoryApi.fetchCategories();
+            const prodRes = await CategoryApi.fetchProducts();
             setCategoryCount(catRes.data.length);
             setProductCount(prodRes.data.length); // confuse why use.data.length
 
@@ -23,6 +21,40 @@ function AdminDashboard() {
         }
     }, []);
 
-    useEffect
+    useEffect(() => {
+        updateCounts();
+    }, [updateCounts]);
 
+    return (
+        <div>
+            <h1 className="page-title">Admin Dashboard</h1>
+            <div className="dashboard-cards">
+                <div className="dashboard-card">
+                    <h2>Total Categories</h2>
+                    <p>{categoryCount}</p>
+                </div>
+                <div className="dashboard-card">
+                    <h2>Total Products</h2>
+                    <p>{productCount}</p>
+                </div>
+            </div>
+            <div className="admin-actions">
+                <button onClick={() => setCategoryModalOpen(true)}>Add Category</button>
+                <button onClick={() => setProductModalOpen(true)}>Add Product</button>
+            </div>
+
+            <AddCategoryModal
+                isOpen={isCategoryModalOpen}
+                onclose={() => setCategoryModalOpen(false)}
+                onSuccess={updateCounts}
+            />
+            <AddProductModal
+                isOpen={isProductModalOpen}
+                onclose={() => setProductModalOpen(false)}
+                onSuccess={updateCounts}
+            />
+        </div>
+    );
 }
+
+export default AdminDashboard;
