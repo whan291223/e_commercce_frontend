@@ -2,6 +2,7 @@ import React, {useState, useEffect, useCallback} from "react";
 import CategoryApi from '../../api/CategoryApi'
 import AddCategoryModal from './AddCategoryModel'
 import AddProductModal from "./AddProductModel";
+import ProductApi from "../../api/ProductApi";
 
 function AdminDashboard() {
     const [categoryCount, setCategoryCount] = useState(0);
@@ -12,7 +13,7 @@ function AdminDashboard() {
     const updateCounts = useCallback( async () => {
         try {
             const catRes = await CategoryApi.fetchCategories();
-            const prodRes = await CategoryApi.fetchProducts();
+            const prodRes = await ProductApi.fetchProducts();
             setCategoryCount(catRes.data.length);
             setProductCount(prodRes.data.length); // confuse why use.data.length
 

@@ -9,14 +9,14 @@ function App() {
   
   return (
     <Router>
-      <Navbar>
-        <main className="container">
-          <Routes>
-            <Route path="/"></Route>
-            <Route path="/admin" element={<AdminDashboard />} />
-          </Routes>
-        </main>
-      </Navbar>
+      <Navbar />
+
+      <main className="container">
+        <Routes>
+          <Route path="/" element={<div>Home</div>} />
+          <Route path="/admin" element={<AdminDashboard />} />
+        </Routes>
+      </main>
     </Router>
   )
 }
