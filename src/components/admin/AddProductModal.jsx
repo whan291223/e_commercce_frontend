@@ -30,22 +30,34 @@ function AddProductModal({ isOpen, onClose, onSuccess }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProductData((prev) => ({ ...prev, [name]: value }));
+    // setProductData((prev) =>{ 
+    //   console.log("prev pd:", prev); 
+    //   return { ...prev, [name]: value };
+    // });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+      // console.log({
+      //   ...productData,
+      //   category_id: parseInt(productData.category_id),
+      //   price: parseInt(productData.price),
+      // });
       await ProductApi.createProduct({
         ...productData,
-        price: parseFloat(productData.price),
+        category_id: parseInt(productData.category_id),
+        price: parseInt(productData.price),
       });
       alert("Product created successfully!");
       onSuccess();
       onClose();
     } catch (error) {
-      console.error("Failed to create product:", error);
-      alert("Failed to create product.");
+      // console.error("Failed to create product:", error);
+      // alert("Failed to create product.");
+      console.error("Server validation error:", error.response.data);
+      alert("Validation failed: " + JSON.stringify(error.response.data));
     } finally {
       setLoading(false);
     }
