@@ -1,83 +1,137 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import ProductApi from "../../api/ProductApi";
 import CategoryApi from "../../api/CategoryApi";
 
-function AddProductModal( { isOpen, onClose, onSuccess }) {
-    const [loading, setLoading] = useState(false);
-    const [categories, setCategories] = useState([]);
-    const [productData, setProductData] = useState({
-        name: '',
-        description: '',
-        price: '',
-        category_id: '',
-    });
-    
-    useEffect(() => {
-        if (isOpen) {
-            const loadCategories = async () => {
-                const res = await CategoryApi.fetchCategories();
-                setCategories(res.data);
-                console.log(res)
-                console.log(res.data)
-                if ( res.data.length > 0) {
-                    setProductData( pd => ({ ...pd, category_id: res.data[0].id}))
-                }
-            };
-            loadCategories();
+function AddProductModal({ isOpen, onClose, onSuccess }) {
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [productData, setProductData] = useState({
+    name: "",
+    description: "",
+    price: "",
+    category_id: "",
+  });
+
+  useEffect(() => {
+    if (isOpen) {
+      const loadCategories = async () => {
+        const res = await CategoryApi.fetchCategories();
+        setCategories(res.data);
+        if (res.data.length > 0) {
+          setProductData((pd) => ({ ...pd, category_id: res.data[0].id }));
         }
-    }, [isOpen]) // made change when is open is changed
+      };
+      loadCategories();
+    }
+  }, [isOpen]);
 
-    if (!isOpen) return null;
+  if (!isOpen) return null;
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setProductData(prev => ({ ...prev, [name]: value}));
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProductData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            await ProductApi.createProduct({
-                ...productData,
-                price: parseFloat(productData.price)
-            });
-            alert('Product created successfully!')
-            onSuccess();
-            onClose();
-        } catch (error) {
-            console.error('Failed to created product:', error);
-            alert('Failed to creaetd product.');
-        } finally {
-            setLoading(false)
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await ProductApi.createProduct({
+        ...productData,
+        price: parseFloat(productData.price),
+      });
+      alert("Product created successfully!");
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error("Failed to create product:", error);
+      alert("Failed to create product.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return (
-        <div className="modal-backdrop">
-            <div className="modal-content">
-                <h2>Add new Product</h2>
-                <form onSubmit={handleSubmit}>
-                    <select name="category_id" value={productData.category_id} onChange={handleChange} required>
-                        <option value="" disabled>Select a Category</option>
-                        {categories.map(cat => (
-                            <option key={cat.id} value={cat.id}>{cat.name}</option>
-                        ))}
-                    </select> 
-                    <input name="name" value={productData.name} onChange={handleChange} placeholder="Product Name" required/>
-                    <textarea name="description" value={productData.description} onChange={handleChange} placeholder="Description" required></textarea>
-                    <input type="number" name="price" value={productData.price} onChange={handleChange} placeholder="Price" required/>
-                    <div className="modal-actions">
-                        <button type="submit" disabled={loading}>
-                            {loading? "Creating..." : "Create Product"}
-                        </button>
-                        <button type="button" onClick={onClose}>Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
+  return (
+    // Backdrop
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+      {/* Modal Box */}
+      <div className="bg-white w-full max-w-md p-6 rounded-xl shadow-xl">
+        {/* Title */}
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+          Add New Product
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Category */}
+          <select
+            name="category_id"
+            value={productData.category_id}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="" disabled>
+              Select a Category
+            </option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+
+          {/* Name */}
+          <input
+            name="name"
+            value={productData.name}
+            onChange={handleChange}
+            placeholder="Product Name"
+            required
+            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          {/* Description */}
+          <textarea
+            name="description"
+            value={productData.description}
+            onChange={handleChange}
+            placeholder="Description"
+            required
+            className="w-full border border-gray-300 rounded-lg p-3 h-24 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          ></textarea>
+
+          {/* Price */}
+          <input
+            type="number"
+            name="price"
+            value={productData.price}
+            onChange={handleChange}
+            placeholder="Price"
+            required
+            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-3 mt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+            >
+              {loading ? "Creating..." : "Create Product"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
-
 
 export default AddProductModal;
