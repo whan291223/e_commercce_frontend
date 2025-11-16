@@ -1,9 +1,7 @@
-// TODO 44.07
-
 import React, { useState } from "react";
 import createCategory from "../../api/CategoryApi";
 
-function AddCategoryModel({ isOpen, onClose, onSuccess }) {
+function AddCategoryModal({ isOpen, onClose, onSuccess }) {
     const [name, setName] = useState('');
     if (!isOpen) return null; //if it already open don't do anything
 
@@ -43,4 +41,4 @@ function AddCategoryModel({ isOpen, onClose, onSuccess }) {
     )
 }
 
-export default AddCategoryModel;
+export default AddCategoryModal;

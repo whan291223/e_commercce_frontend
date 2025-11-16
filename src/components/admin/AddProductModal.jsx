@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from "react";
-import createProduct from "../../api/ProductApi";
-import fetchCategory from "../../api/CategoryApi";
+import ProductApi from "../../api/ProductApi";
+import CategoryApi from "../../api/CategoryApi";
 
 function AddProductModal( { isOpen, onClose, onSuccess }) {
     const [loading, setLoading] = useState(false);
@@ -15,7 +15,7 @@ function AddProductModal( { isOpen, onClose, onSuccess }) {
     useEffect(() => {
         if (isOpen) {
             const loadCategories = async () => {
-                const res = await fetchCategory();
+                const res = await CategoryApi.fetchCategories();
                 setCategories(res.data);
                 console.log(res)
                 console.log(res.data)
@@ -38,7 +38,7 @@ function AddProductModal( { isOpen, onClose, onSuccess }) {
         e.preventDefault();
         setLoading(true);
         try {
-            await createProduct({
+            await ProductApi.createProduct({
                 ...productData,
                 price: parseFloat(productData.price)
             });
