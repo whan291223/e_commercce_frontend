@@ -24,3 +24,5 @@ function ProductGrid({ products }) {
         </div>
     )
 }
+
+export default ProductGrid;
