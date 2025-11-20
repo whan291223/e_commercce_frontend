@@ -5,9 +5,10 @@ import ProductApi from "../../api/ProductApi";
 import CategoryList from "./ProductGrid"
 import { useState } from "react";
 import { useEffect } from "react";
-
+import ProductGrid
+ from "./ProductGrid";
 function CustomerPage() {
-    const [product, setProduct] = useState([]);
+    const [products, setProduct] = useState([]);
     const [title, setTitle] = useState('Our Star Product');
 
     useEffect( () => {
@@ -30,9 +31,9 @@ function CustomerPage() {
             setTitle('Our Star Products');
         } else {
             try {
-                const response = await ProductApi.fetchProductsByCategory(category_id); // is use by id or name which one is realworld
+                const response = await ProductApi.fetchProductsByCategory(category.name); // is use by id or name which one is realworld
                 setProducts(response.data);
-                setTitle(`Products in ${Category_name}`);
+                setTitle(`Products in ${category.name}`);
             } catch (error) {
                 console.error("Failed to fetch prodcts by category: ", error);
                 setProduct([]);
@@ -40,9 +41,15 @@ function CustomerPage() {
         }
     };
 
-    return { //TODO
-
-    }
-
-
+    
+    return (
+        <div>
+            <CategoryList onCategorySelect={handleCategorySelect}></CategoryList>
+            <h1 className="page-title">{title}</h1>
+            <ProductGrid products={products}></ProductGrid>
+        </div>
+    );
 }
+
+
+export default CustomerPage;

@@ -1,28 +1,25 @@
 import React from "react";
 
 function ProductGrid({ products }) {
-    if (!products.length) {
-        return <p>No products found.</p>
+    // Always expect an array
+    if (!Array.isArray(products) || products.length === 0) {
+        return <p>No products found.</p>;
     }
 
     return (
         <div className="product-grid">
-            {products.map((products) => (
-                <div key={products.id} className="product-card">
+            {products.map((product) => (
+                <div key={product.id} className="product-card">
                     <div className="product-info">
-                        <h3>{products.name}</h3>
-                        <p className="product-desc">{products.description} </p>
-                        <p className="product-price">{products.price.toFixed(2)} </p>
-                        <span className="product-category">{products.category.name}</span>
-
+                        <h3>{product.name}</h3>
+                        <p className="product-desc">{product.description}</p>
+                        <p className="product-price">{product.price?.toFixed(2)}</p>
+                        <span className="product-category">{product.category?.name}</span>
                     </div>
                 </div>
-            )
-
-            )}
-
+            ))}
         </div>
-    )
+    );
 }
 
 export default ProductGrid;
