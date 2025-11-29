@@ -2,20 +2,19 @@
 import React from "react";
 // import { fetchProducts, fetchProductsByCategory } from '../../api'
 import ProductApi from "../../api/ProductApi";
-import CategoryList from "./ProductGrid"
+import CategoryList from "./CategoryList"
 import { useState } from "react";
 import { useEffect } from "react";
-import ProductGrid
- from "./ProductGrid";
+import ProductGrid from "./ProductGrid";
 function CustomerPage() {
-    const [products, setProduct] = useState([]);
+    const [products, setProducts] = useState([]);
     const [title, setTitle] = useState('Our Star Product');
 
     useEffect( () => {
         const loadAllProducts = async () => { //why not use callback? what this use effect do ? why async?
             try {
                 const response = await ProductApi.fetchProducts();
-                setProduct(response.data);
+                setProducts(response.data);
             } catch (error) {
                 console.error("Failed to fetch products:", error);
             }
@@ -27,7 +26,7 @@ function CustomerPage() {
         if (!category) {
             // If all is select or component is mount???
             const response = await ProductApi.fetchProducts();
-            setProduct(response.data);
+            setProducts(response.data);
             setTitle('Our Star Products');
         } else {
             try {
@@ -43,12 +42,17 @@ function CustomerPage() {
 
     
     return (
-        <div>
-            <CategoryList onCategorySelect={handleCategorySelect}></CategoryList>
-            <h1 className="page-title">{title}</h1>
-            <ProductGrid products={products}></ProductGrid>
+        <div className="max-w-6xl mx-auto p-4">
+            <CategoryList onCategorySelect={handleCategorySelect} />
+
+            <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-800">
+            {title}
+            </h1>
+
+            <ProductGrid products={products} />
         </div>
-    );
+);
+
 }
 
 

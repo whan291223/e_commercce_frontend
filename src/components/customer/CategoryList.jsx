@@ -1,4 +1,4 @@
-// TODO 1:38import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import CategoryApi from "../../api/CategoryApi.jsx";
 
 function CategoryList({ onCategorySelect }) {
@@ -7,7 +7,7 @@ function CategoryList({ onCategorySelect }) {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const response = await CategoryApi.fetchCategory();
+        const response = await CategoryApi.fetchCategories();
         setCategories(response.data);
       } catch (error) {
         console.error("Failed to fetch categories:", error);
@@ -17,10 +17,21 @@ function CategoryList({ onCategorySelect }) {
   }, []);
 
   return (
-    <div className="category-tabs">
-      <button onClick={() => onCategorySelect(null)}>All Products</button>
+    <div className="flex gap-2 flex-wrap bg-gray-100 p-4 rounded-lg shadow-sm">
+      <button
+        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+        onClick={() => onCategorySelect(null)}
+      >
+        All Products
+      </button>
+
       {categories.map((cat) => (
-        <button key={cat.id} onClick={() => onCategorySelect(cat)}>
+        <button
+          key={cat.id}
+          className="px-4 py-2 bg-white text-gray-700 border border-gray-300 
+                     rounded-lg hover:bg-gray-200 transition"
+          onClick={() => onCategorySelect(cat)}
+        >
           {cat.name}
         </button>
       ))}
