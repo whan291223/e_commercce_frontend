@@ -36,3 +36,9 @@ do something when open or close
 1. run everytime
 2. run once
 3. run when ... is changed
+
+
+### frontend workflow
+- app.jsx -> route the customer view and admin view
+- customer/CustomerPage.jsx -> custmer page -> contain CategoryList and ProductGrid
+homework add some of the component into the customer.jsx

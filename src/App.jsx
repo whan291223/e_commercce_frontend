@@ -9,9 +9,11 @@ function App() {
   
   return (
     <Router>
+      {/* nav bar */}
       <Navbar />
-
+      
       <main className="container">
+        {/* Routing for admin view and customer view */}
         <Routes>
           <Route path="/" element={<CustomerPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
