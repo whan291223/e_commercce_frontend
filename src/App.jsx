@@ -25,7 +25,7 @@ function HomeRedirect() {
         if (res.data.role === "admin") {
           setRedirect("/admin");
         } else {
-          setRedirect("/");
+          setRedirect("/customer");
         }
       })
       .catch(() => {
@@ -147,7 +147,7 @@ function App() {
             }
           />
           <Route
-            path="/"
+            path="/customer"
             element={
               <CustomerRoute>
                 <CustomerPage />

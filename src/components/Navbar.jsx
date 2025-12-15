@@ -12,7 +12,7 @@ function Navbar() {
 
       <div className="flex gap-6">
         <NavLink
-          to="/"
+          to="/customer"
           className={({ isActive }) =>
             `text-gray-300 hover:text-white transition-colors duration-200 ${
               isActive ? "border-b-2 border-white pb-1" : ""
