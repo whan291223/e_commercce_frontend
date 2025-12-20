@@ -49,7 +49,7 @@ function CustomerPage() {
             <CategoryList onCategorySelect={handleCategorySelect} />
 
             {/* Title of Category Name if not shown as can't see any product #TODO add 'Can't see any product!'*/}
-            <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-800">
+            <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-800 dark:text-white">
             {title}
             </h1>
 

@@ -24,12 +24,13 @@ function CategoryList({ onCategorySelect }) {
   }
 // TODO still not done with blude highlighted category selected button 
   return (
-    <div className="flex gap-2 flex-wrap bg-gray-100 p-4 rounded-lg shadow-sm">
+    <div className="flex gap-2 flex-wrap bg-gray-100 dark:bg-gray-900 p-4 rounded-lg shadow-sm">
       <button
         className={"px-4 py-2 rounded-lg transition " + 
           ( selectedCategory === null
             ? "bg-blue-500 text-white hover:bg-blue-600"
-            :  "bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-200")} // this hover blue need to be edit so that it highlight button that selected
+            :  "bg-white text-gray-700 dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-200 hover:dark:bg-gray-800")} // this hover blue need to be edit so that it highlight button that selected
+            //  dark:bg-gray-800 dark:text-white
         onClick={() => handleButtonSelected(null)}
       >
         All Products
@@ -41,7 +42,7 @@ function CategoryList({ onCategorySelect }) {
           className={"px-4 py-2 rounded-lg transition " + 
           ( selectedCategory === cat
             ? "bg-blue-500 text-white hover:bg-blue-600"
-            :  "bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-200")} // this hover blue need to be edit so that it highlight button that selected
+            :  "bg-white text-gray-700 dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-200 hover:dark:bg-gray-800")} // this hover blue need to be edit so that it highlight button that selected
           onClick={() => handleButtonSelected(cat)}
         >
           {cat.name}

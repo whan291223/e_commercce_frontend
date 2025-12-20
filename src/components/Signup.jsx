@@ -27,7 +27,7 @@ function Signup() {
           Signup
         </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 dark:text-white">
           <input
             type="text"
             placeholder="Username"
@@ -39,7 +39,7 @@ function Signup() {
           />
 
           <input
-            type="password"
+            type="current-password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -60,11 +60,11 @@ function Signup() {
             <p className="text-red-600 text-center text-sm">{error}</p>
           )}
 
-          <p className="text-center text-gray-600">
+          <p className="text-center text-gray-600 dark:text-white">
             Already have an account?{" "}
             <a
               href="/login"
-              className="text-blue-600 hover:underline font-medium"
+              className="text-blue-600 dark:text-blue-300 hover:underline font-medium"
             >
               Login
             </a>

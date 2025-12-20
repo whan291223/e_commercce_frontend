@@ -21,10 +21,11 @@ function Navbar() {
     const newTheme = html.classList.toggle("dark");
 
     setIsDark(newTheme);
+    localStorage.setItem("theme", newTheme ? "dark" : "light");
   };
 
   return (
-    <nav className="flex items-center justify-between px-6 py-3 bg-linear-to-r from-gray-800 via-gray-900 to-black shadow-md">
+    <nav className="flex items-center justify-between px-6 py-3 bg-linear-to-r from-gray-600 via-gray-700 to-gray-800 dark:from-gray-800 dark:via-gray-900 dark:to-black shadow-md">
       <div className="text-white text-2xl font-bold tracking-wide">
         E-Com-react
       </div>

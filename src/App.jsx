@@ -130,10 +130,16 @@ function CustomerRoute({ children }) {
 }
 
 function App() {
+  const theme = localStorage.getItem('theme'); // 'true' or 'false'
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
   return (
     <Router>
       <Navbar />
-      <main className="mx-auto p-4 dark:bg-gray-500">
+      <main className="min-h-screen mx-auto p-4 dark:bg-gray-500">
         <Routes>
           <Route path="/" element={<HomeRedirect />} />
           <Route path="/login" element={<Login />} />

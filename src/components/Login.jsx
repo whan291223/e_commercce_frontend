@@ -77,7 +77,7 @@ function Login() {
             Don’t have an account?{" "}
             <a
               href="/signup"
-              className="text-blue-600 hover:underline font-medium"
+              className="text-blue-600 dark:text-blue-300 hover:underline font-medium"
             >
               Signup
             </a>
