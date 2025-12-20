@@ -133,7 +133,7 @@ function App() {
   return (
     <Router>
       <Navbar />
-      <main className="max-w-5xl mx-auto p-4">
+      <main className="mx-auto p-4 dark:bg-gray-500">
         <Routes>
           <Route path="/" element={<HomeRedirect />} />
           <Route path="/login" element={<Login />} />

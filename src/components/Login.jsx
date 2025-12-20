@@ -32,8 +32,8 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
+      <div className="bg-white  dark:bg-gray-800 shadow-xl rounded-xl p-8 w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800 dark:text-white">
           Login
         </h1>
 
@@ -43,7 +43,7 @@ function Login() {
           </p>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 dark:text-white">
           <input
             type="text"
             placeholder="Username"
@@ -54,7 +54,7 @@ function Login() {
           />
 
           <input
-            type="password"
+            type="current-password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -73,7 +73,7 @@ function Login() {
             <p className="text-red-600 text-center text-sm">{error}</p>
           )}
 
-          <p className="text-center text-gray-600">
+          <p className="text-center text-gray-600 dark:text-white">
             Don’t have an account?{" "}
             <a
               href="/signup"
