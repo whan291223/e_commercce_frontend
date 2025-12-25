@@ -1,5 +1,7 @@
 import React from "react";
 
+const API_BASE_URL = "http://localhost:8000";
+
 function ProductGrid({ products }) {
   if (!Array.isArray(products) || products.length === 0) {
     return (
@@ -11,44 +13,60 @@ function ProductGrid({ products }) {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
-      {products.map((product) => (
-        <div
-          key={product.id}
-          className="
-            bg-white dark:bg-gray-800
-            shadow-md dark:shadow-none
-            rounded-xl p-5
-            border border-gray-200 dark:border-gray-700
-            hover:shadow-lg dark:hover:shadow-gray-900/50
-            transition-shadow duration-200
-          "
-        >
-          <div className="flex flex-col h-full">
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-              {product.name}
-            </h3>
+      {products.map((product) => {
+        const imageUrl = product.image_path
+          ? `${API_BASE_URL}/${product.image_path}`
+          : "/placeholder.png"; // optional fallback
 
-            <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
-              {product.description}
-            </p>
+        return (
+          <div
+            key={product.id}
+            className="
+              bg-white dark:bg-gray-800
+              shadow-md dark:shadow-none
+              rounded-xl p-5
+              border border-gray-200 dark:border-gray-700
+              hover:shadow-lg dark:hover:shadow-gray-900/50
+              transition-shadow duration-200
+            "
+          >
+            <div className="flex flex-col h-full">
+              {/* 🔥 Product Image */}
+              {product.image_path && (<img
+                src={imageUrl}
+                alt={product.name}
+                className="w-full h-40 object-cover rounded-lg mb-4"
+                onError={(e) => {
+                  e.currentTarget.src = "/placeholder.png";
+                }}
+              />)}
 
-            <p className="text-xl font-bold text-blue-600 dark:text-blue-400 mt-4">
-              ${product.price?.toFixed(2)}
-            </p>
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                {product.name}
+              </h3>
 
-            <span
-              className="
-                mt-3 inline-block text-xs
-                bg-gray-100 dark:bg-gray-700
-                text-gray-700 dark:text-gray-200
-                px-3 py-1 rounded-full w-max
-              "
-            >
-              {product.category?.name}
-            </span>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
+                {product.description}
+              </p>
+
+              <p className="text-xl font-bold text-blue-600 dark:text-blue-400 mt-4">
+                ${product.price?.toFixed(2)}
+              </p>
+
+              <span
+                className="
+                  mt-3 inline-block text-xs
+                  bg-gray-100 dark:bg-gray-700
+                  text-gray-700 dark:text-gray-200
+                  px-3 py-1 rounded-full w-max
+                "
+              >
+                {product.category?.name}
+              </span>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

@@ -1,13 +1,19 @@
 On Admin Page
 - Remove Category
 - Remove Product
+- Create product -> add image
+- Edit Product -> add image
 
 On Customer Page
 - Items name should not be duplicate
-- Item should have pic
+- Item should have pic // on going
+|- 
+|
 - how buyer can buy
 
-login page for customer
-- 
+On login page
+- if user go to customer or admin route it should route to login page first
+- customer should see the product first and when buy need to login
 
-How to update total items in realtime without shutdowm the web site?
+Image Handler
+- image size
