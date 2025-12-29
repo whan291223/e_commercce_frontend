@@ -3,6 +3,8 @@ import CategoryApi from "../../api/CategoryApi";
 import ProductApi from "../../api/ProductApi";
 import AddCategoryModal from "./AddCategoryModal";
 import AddProductModal from "./AddProductModal";
+import AdminProductTable from "./AdminProductTable";
+import EditProductModal from "./EditProductModal";
 
 function AdminDashboard() {
   const [categoryCount, setCategoryCount] = useState(0);
@@ -25,6 +27,15 @@ function AdminDashboard() {
     updateCounts();
   }, [updateCounts]);
 
+  const [products, setProducts] = useState([]);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const loadProducts = async () => {
+    const prodRes = await ProductApi.fetchProducts();
+    setProducts(prodRes.data)
+  }
+  useEffect(() => {
+    loadProducts();
+  }, []);
   return (
     <div className="p-6 bg-gray-100 dark:bg-gray-900">
       {/* Title */}
@@ -84,7 +95,28 @@ function AdminDashboard() {
         onClose={() => setProductModalOpen(false)}
         onSuccess={updateCounts}
       />
+
+    <h2 className="pt-6 text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">Manage Products</h2>
+
+      <AdminProductTable
+        products={products}
+        onRefresh={loadProducts}
+        onEdit={setEditingProduct}
+      />
+    {editingProduct && (
+        <EditProductModal
+          product={editingProduct}
+          onClose={() => setEditingProduct(null)}
+          onSuccess={() => {
+            setEditingProduct(null);
+            loadProducts();
+          }}
+        />
+      )}
+    
     </div>
+
+
   );
 }
 

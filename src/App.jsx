@@ -101,7 +101,7 @@ function CustomerRoute({ children }) {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {
-        setAuth(res.data.role !== "admin");
+        setAuth(["customer", "admin"].includes(res.data.role));
         setLoading(false);
       })
       .catch(() => {

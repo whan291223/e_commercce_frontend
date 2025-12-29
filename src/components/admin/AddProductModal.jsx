@@ -5,6 +5,8 @@ import CategoryApi from "../../api/CategoryApi";
 function AddProductModal({ isOpen, onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [imageFile, setImageFile] = useState(null); // ✅ added
+
   const [productData, setProductData] = useState({
     name: "",
     description: "",
@@ -35,12 +37,21 @@ function AddProductModal({ isOpen, onClose, onSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      await ProductApi.createProduct({
-        ...productData,
-        category_id: parseInt(productData.category_id),
-        price: parseInt(productData.price),
-      });
+      // ✅ use FormData
+      const formData = new FormData();
+      formData.append("name", productData.name);
+      formData.append("description", productData.description);
+      formData.append("price", productData.price);
+      formData.append("category_id", productData.category_id);
+
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
+      await ProductApi.createProduct(formData);
+
       alert("Product created successfully!");
       onSuccess();
       onClose();
@@ -145,6 +156,28 @@ function AddProductModal({ isOpen, onClose, onSuccess }) {
               focus:ring-blue-500 dark:focus:ring-blue-400
             "
           />
+
+          {/* ✅ IMAGE INPUT (Tailwind untouched) */}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImageFile(e.target.files[0])}
+            className="
+              w-full p-3 rounded-lg border
+              bg-white dark:bg-gray-900
+              border-gray-300 dark:border-gray-600
+              text-gray-800 dark:text-gray-100
+            "
+          />
+
+          {/* ✅ IMAGE PREVIEW */}
+          {imageFile && (
+            <img
+              src={URL.createObjectURL(imageFile)}
+              alt="Preview"
+              className="w-full h-40 object-cover rounded-lg"
+            />
+          )}
 
           {/* ACTION BUTTONS */}
           <div className="flex justify-end gap-3 mt-4">
