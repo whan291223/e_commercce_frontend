@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProductApi from "../../api/ProductApi";
 import CategoryApi from "../../api/CategoryApi";
 
-function EditProductModal({ product, isOpen, onClose, onSuccess }) {
+function EditProductModal({ product, onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [imageFile, setImageFile] = useState(null);
@@ -26,16 +26,16 @@ function EditProductModal({ product, isOpen, onClose, onSuccess }) {
   }, [product]);
 
   useEffect(() => {
-    if (!isOpen) return;
+     if (!product) return;
 
-    const loadCategories = async () => {
-      const res = await CategoryApi.fetchCategories();
-      setCategories(res.data);
-    };
-    loadCategories();
-  }, [isOpen]);
+  const loadCategories = async () => {
+    const res = await CategoryApi.fetchCategories();
+    setCategories(res.data);
+  };
+  loadCategories();
+}, [product]);
 
-  if (!isOpen || !product) return null;
+  if (!product) return null;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,17 +48,20 @@ function EditProductModal({ product, isOpen, onClose, onSuccess }) {
 
     try {
       const data = new FormData();
+      data.append("id", product.id);
       data.append("name", formData.name);
       data.append("description", formData.description);
       data.append("price", formData.price);
       data.append("category_id", formData.category_id);
-
       // ✅ only append image if user selected one
       if (imageFile) {
         data.append("image", imageFile);
       }
+      for (let [key, value] of data.entries()) {
+        console.log(key, value);
+        }
 
-      await ProductApi.updateProduct(product.id, data);
+      await ProductApi.UpdateProduct(data);
 
       alert("Product updated successfully");
       onSuccess();
@@ -85,7 +88,7 @@ function EditProductModal({ product, isOpen, onClose, onSuccess }) {
             value={formData.category_id}
             onChange={handleChange}
             required
-            className="w-full p-3 rounded-lg border bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+            className="dark:text-white w-full p-3 rounded-lg border bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
           >
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
@@ -100,7 +103,7 @@ function EditProductModal({ product, isOpen, onClose, onSuccess }) {
             value={formData.name}
             onChange={handleChange}
             required
-            className="w-full p-3 rounded-lg border bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+            className="dark:text-white w-full p-3 rounded-lg border bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
           />
 
           {/* DESCRIPTION */}
@@ -109,7 +112,7 @@ function EditProductModal({ product, isOpen, onClose, onSuccess }) {
             value={formData.description}
             onChange={handleChange}
             required
-            className="w-full p-3 h-24 rounded-lg border resize-none bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+            className="dark:text-white w-full p-3 h-24 rounded-lg border resize-none bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
           />
 
           {/* PRICE */}
@@ -119,7 +122,7 @@ function EditProductModal({ product, isOpen, onClose, onSuccess }) {
             value={formData.price}
             onChange={handleChange}
             required
-            className="w-full p-3 rounded-lg border bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+            className="dark:text-white w-full p-3 rounded-lg border bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
           />
 
           {/* IMAGE (optional) */}
@@ -130,7 +133,7 @@ function EditProductModal({ product, isOpen, onClose, onSuccess }) {
             className="w-full text-sm text-gray-700 dark:text-gray-300"
           />
 
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-500 dark:text-white">
             Leave empty to keep existing image
           </p>
 
@@ -139,7 +142,7 @@ function EditProductModal({ product, isOpen, onClose, onSuccess }) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700"
+              className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-300"
             >
               Cancel
             </button>
