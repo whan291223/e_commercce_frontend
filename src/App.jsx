@@ -43,37 +43,58 @@ function HomeRedirect() {
 
 // Protects admin route
 function AdminRoute({ children }) {
-  const [auth, setAuth] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
+  const [status, setStatus] = React.useState("loading");
+  const [error, setError] = React.useState(null);
 
   React.useEffect(() => {
     const token = sessionStorage.getItem("jwt_token");
     if (!token) {
-      setAuth(false);
-      setLoading(false);
+      setStatus("unauthenticated");
       return;
     }
     api.get("/api/v1/users/my_session/", {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {
-        setAuth(res.data.role === "admin");
-        setLoading(false);
+        const role = res.data.role;
+        if (role === "admin") {
+          setStatus("allowed");
+        } else {
+          // Logged in but wrong role
+          setStatus("forbidden");
+        }
       })
       .catch(() => {
-        setAuth(false);
-        setLoading(false);
+        sessionStorage.removeItem("jwt_token");
+        setError("Your session has expired. Please log in again.");
+        setStatus("unauthenticated");
       });
   }, []);
 
-  if (loading)
+  if (status === "loading")
     return (
       <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
         Loading...
       </div>
     );
 
-  if (!auth)
+  if (status === "unauthenticated") {
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 1500);
+
+    return (
+      <div className="max-w-xl mx-auto mt-6 p-4 bg-red-50 border border-red-300 rounded-lg text-center">
+        <p className="text-red-700">
+          {error || "Please log in again."}
+        </p>
+      </div>
+    );
+  }
+
+
+  // 🚫 Wrong role (KEEP your old message)
+  if (status === "forbidden")
     return (
       <div className="max-w-xl mx-auto mt-12 p-6 bg-red-50 border border-red-300 rounded-xl text-center">
         <h2 className="text-2xl font-semibold text-red-700">
@@ -87,37 +108,65 @@ function AdminRoute({ children }) {
 
 // Protects customer route
 function CustomerRoute({ children }) {
-  const [auth, setAuth] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
+  const [status, setStatus] = React.useState("loading");
+  const [error, setError] = React.useState(null);
+
+  // loading | unauthenticated | forbidden | allowed
 
   React.useEffect(() => {
     const token = sessionStorage.getItem("jwt_token");
+
+    // 🚨 Not logged in
     if (!token) {
-      setAuth(false);
-      setLoading(false);
+      setStatus("unauthenticated");
       return;
     }
+
     api.get("/api/v1/users/my_session/", {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {
-        setAuth(["customer", "admin"].includes(res.data.role));
-        setLoading(false);
+        const role = res.data.role;
+
+        if (["customer", "admin"].includes(role)) {
+          setStatus("allowed");
+        } else {
+          // Logged in but wrong role
+          setStatus("forbidden");
+        }
       })
       .catch(() => {
-        setAuth(false);
-        setLoading(false);
+        sessionStorage.removeItem("jwt_token");
+        setError("Your session has expired. Please log in again.");
+        setStatus("unauthenticated");
       });
   }, []);
 
-  if (loading)
+  if (status === "loading")
     return (
       <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
         Loading...
       </div>
     );
 
-  if (!auth)
+  // 🔁 Not logged in or expired
+  if (status === "unauthenticated") {
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 1500);
+
+    return (
+      <div className="max-w-xl mx-auto mt-6 p-4 bg-red-50 border border-red-300 rounded-lg text-center">
+        <p className="text-red-700">
+          {error || "Session expired, Please log in again."}
+        </p>
+      </div>
+    );
+  }
+
+
+  // 🚫 Wrong role (KEEP your old message)
+  if (status === "forbidden")
     return (
       <div className="max-w-xl mx-auto mt-12 p-6 bg-yellow-50 border border-yellow-300 rounded-xl text-center">
         <h2 className="text-2xl font-semibold text-yellow-700">
