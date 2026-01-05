@@ -1,3 +1,20 @@
+To Be Done
+- 
+- Payment Feature
+- sort the item based on somethng
+- customer should see the product first and when buy need to login
+- invalid credential should shown as -> Error username or password false
+- use metamask wallet as payment
+- customer didn't need customer and admin view
+- cart button in sidebar
+
+TODAY
+- 
+- Payment research -> use stripe it can also use Thai ATM and promtpay 
+- stripe payment call api 
+- front end cart
+
+
 On Admin Page
 - Remove Category // done
 - Remove Product    // done

@@ -7,6 +7,8 @@ import Login from './components/Login.jsx';
 import Signup from './components/Signup.jsx';
 import api from './api/ApiService.jsx';
 import './App.css'
+import { CartProvider } from './context/CartContext'; 
+import CartSidebar from './components/customer/Cart/CartSidebar';
 
 // Redirects "/" to login or dashboard based on JWT and role
 function HomeRedirect() {
@@ -179,39 +181,45 @@ function CustomerRoute({ children }) {
 }
 
 function App() {
-  const theme = localStorage.getItem('theme'); // 'true' or 'false'
+  const theme = localStorage.getItem('theme');
   if (theme === 'dark') {
     document.documentElement.classList.add('dark');
   } else {
     document.documentElement.classList.remove('dark');
   }
+
   return (
-    <Router>
-      <Navbar />
-      <main className="min-h-screen mx-auto p-4 dark:bg-gray-500">
-        <Routes>
-          <Route path="/" element={<HomeRedirect />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route
-            path="/admin"
-            element={
-              <AdminRoute>
-                <AdminDashboard />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/customer"
-            element={
-              <CustomerRoute>
-                <CustomerPage />
-              </CustomerRoute>
-            }
-          />
-        </Routes>
-      </main>
-    </Router>
+    <CartProvider>
+      <Router>
+        <Navbar />
+        {/* Add the Sidebar here so it can pop up on any page */}
+        <CartSidebar /> 
+        
+        <main className="min-h-screen mx-auto p-4 dark:bg-gray-500">
+          <Routes>
+            <Route path="/" element={<HomeRedirect />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/customer"
+              element={
+                <CustomerRoute>
+                  <CustomerPage />
+                </CustomerRoute>
+              }
+            />
+          </Routes>
+        </main>
+      </Router>
+    </CartProvider>
   );
 }
 

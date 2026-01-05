@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext"; // Import the hook
 
 function Navbar() {
   const navigate = useNavigate();
+  const { toggleCart, cartItems } = useCart(); // Destructure what we need
 
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains("dark")
   );
+
+  // Calculate total items in cart for the badge
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const token = sessionStorage.getItem("jwt_token");
   const isLoggedIn = !!token;
@@ -19,7 +24,6 @@ function Navbar() {
   const toggleDarkMode = () => {
     const html = document.documentElement;
     const newTheme = html.classList.toggle("dark");
-
     setIsDark(newTheme);
     localStorage.setItem("theme", newTheme ? "dark" : "light");
   };
@@ -58,6 +62,23 @@ function Navbar() {
             Admin View
           </NavLink>
         )}
+
+        {/* --- START: CART BUTTON SECTION --- */}
+        {isLoggedIn && (
+          <button
+            onClick={toggleCart}
+            className="relative p-2 text-gray-300 hover:text-white transition-colors"
+            aria-label="Open Cart"
+          >
+            <span className="text-2xl">🛒</span>
+            {totalItems > 0 && (
+              <span className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
+                {totalItems}
+              </span>
+            )}
+          </button>
+        )}
+        {/* --- END: CART BUTTON SECTION --- */}
 
         {isLoggedIn && (
           <button
