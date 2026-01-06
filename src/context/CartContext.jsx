@@ -1,5 +1,5 @@
 //manages the items in the cart, calculates totals, and handles adding/removing items.
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
@@ -27,9 +27,19 @@ export const CartProvider = ({ children }) => {
   const toggleCart = () => setIsCartOpen(!isCartOpen);
 
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const clearCart = () => {
+    setCartItems([]);
+    setIsCartOpen(false);
+  };
 
+  useEffect(() => {
+  const token = sessionStorage.getItem("jwt_token");
+  if (!token) {
+    setCartItems([]); // Wipe cart if token disappears
+  }
+}, []);
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, isCartOpen, toggleCart, cartTotal }}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, isCartOpen, toggleCart, cartTotal, clearCart }}>
       {children}
     </CartContext.Provider>
   );

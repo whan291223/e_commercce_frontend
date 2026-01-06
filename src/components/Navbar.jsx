@@ -4,7 +4,7 @@ import { useCart } from "../context/CartContext"; // Import the hook
 
 function Navbar() {
   const navigate = useNavigate();
-  const { toggleCart, cartItems } = useCart(); // Destructure what we need
+  const { toggleCart, cartItems, clearCart } = useCart(); // Destructure what we need
 
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains("dark")
@@ -18,6 +18,7 @@ function Navbar() {
 
   const handleLogout = () => {
     sessionStorage.removeItem("jwt_token");
+    clearCart();
     navigate("/login");
   };
 
