@@ -6,13 +6,20 @@ To Be Done
 - invalid credential should shown as -> Error username or password false
 - use metamask wallet as payment
 - customer didn't need customer and admin view
-- cart button in sidebar
+- cart button in sidebar// done
+
+
+version 1 -> dont have product detail yet
+
+- need admin page to confige user -> may be user table
+- sort data in Manage product table
+- clear cart in cart context
+- learn how cart and login work...
 
 TODAY
 - 
 - Payment research -> use stripe it can also use Thai ATM and promtpay 
-- stripe payment call api 
-- front end cart
+
 
 
 On Admin Page
