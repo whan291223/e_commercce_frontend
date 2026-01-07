@@ -2,24 +2,44 @@ import React from 'react';
 import { useCart } from '../../../context/CartContext';
 import CartItem from './CartItem';
 import cartBlank from '../../../assets/cart-blank.svg';
+
 const CartSidebar = () => {
   const { cartItems, isCartOpen, toggleCart, cartTotal } = useCart();
-  const handleCheckout = async () => {
-  const res = await fetch("http://localhost:8000/payment/create-checkout-session", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      items: cartItems.map(item => ({
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-      }))
-    })
-  });
 
-  const data = await res.json();
-  window.location.href = data.url;
+  const handleCheckout = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:8000/api/v1/payment/create-checkout-session",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items: cartItems.map(item => ({
+              name: item.name,
+              price: item.price,
+              quantity: item.quantity,
+            })),
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Checkout failed");
+      }
+
+      const data = await res.json();
+
+      if (!data.url) {
+        throw new Error("No checkout URL returned");
+      }
+
+      window.location.href = data.url;
+    } catch (err) {
+      console.error(err);
+      alert("Unable to start checkout. Please try again.");
+    }
   };
+
   return (
     <>
       {/* Overlay */}
@@ -47,18 +67,18 @@ const CartSidebar = () => {
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <button
-                onClick={toggleCart}
-                className="text-2xl text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"
+              onClick={toggleCart}
+              className="text-2xl text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"
             >
-                &times;
+              &times;
             </button>
 
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                Your Shopping Cart
+              Your Shopping Cart
             </h2>
-            </div>
+          </div>
 
-          {/* Items */}
+          {/* Items (SCROLL AREA) */}
           <div className="flex-1 overflow-hidden min-h-0">
             {cartItems.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full space-y-4">
@@ -72,8 +92,8 @@ const CartSidebar = () => {
                 </p>
               </div>
             ) : (
-              <div className="h-full min-h-0 space-y-4 overflow-y-auto pr-2 ">
-                {cartItems.map((item) => (
+              <div className="h-full min-h-0 space-y-4 overflow-y-auto pr-2">
+                {cartItems.map(item => (
                   <CartItem key={item.id} item={item} />
                 ))}
               </div>
@@ -91,13 +111,15 @@ const CartSidebar = () => {
               </div>
 
               <button
+                onClick={handleCheckout}
+                disabled={cartItems.length === 0}
                 className="
                   w-full py-3 rounded-lg
                   bg-indigo-600 hover:bg-indigo-700
+                  disabled:bg-gray-400 disabled:cursor-not-allowed
                   text-white font-semibold
                   transition
                 "
-                onClick={handleCheckout}
               >
                 Pay with Stripe
               </button>
