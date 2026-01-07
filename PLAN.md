@@ -16,12 +16,13 @@ version 1 -> dont have product detail yet
 - sort data in Manage product table
 - clear cart in cart context // done
 - learn how cart and login work...//done
-- integrate stripe // to be done
+- integrate stripe // halfway done
 
 
 TODAY
 - 
 - Payment research -> use stripe it can also use Thai ATM and promtpay 
+- stripe webhook
 
 
 

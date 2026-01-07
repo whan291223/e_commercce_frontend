@@ -15,14 +15,12 @@ const CartSidebar = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             items: cartItems.map(item => ({
-              name: item.name,
-              price: item.price,
+              product_id: item.id,
               quantity: item.quantity,
             })),
           }),
         }
       );
-
       if (!res.ok) {
         throw new Error("Checkout failed");
       }
@@ -121,7 +119,8 @@ const CartSidebar = () => {
                   transition
                 "
               >
-                Pay with Stripe
+                Pay with Stripe 
+                {/* TODO add some thing to tell that site pay site is still loading */}
               </button>
             </div>
           )}
