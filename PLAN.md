@@ -11,10 +11,12 @@ To Be Done
 
 version 1 -> dont have product detail yet
 
-- need admin page to confige user -> may be user table
+- need admin page to confige user -> may be user table -> add mew side bar + etc...
 - sort data in Manage product table
-- clear cart in cart context
-- learn how cart and login work...
+- clear cart in cart context // done
+- learn how cart and login work...// to be done
+- integrate stripe // to be done
+
 
 TODAY
 - 

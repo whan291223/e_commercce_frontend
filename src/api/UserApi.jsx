@@ -9,7 +9,7 @@ const UserApi = {
    },
    getSession: (token) => 
     api.get("/api/v1/users/my_session/", { headers: {Authorization: `Bearer ${token}` }}),
-   signup: (username, password) => api.post("/api/v1/users/", { username, password}),
+   signup: (username, password, role) => api.post("/api/v1/users/", { username, password, role}),
 
 }; 
 

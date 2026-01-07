@@ -13,7 +13,7 @@ function Signup() {
     setError("");
 
     try {
-      await UserApi.signup(username, password);
+      await UserApi.signup(username, password, "customer");
       navigate("/login", { state: { signupSuccess: true } });
     } catch (err) {
       setError(`Signup failed. Try a different username. ${err}`);
