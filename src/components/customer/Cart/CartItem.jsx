@@ -2,15 +2,11 @@ import React from 'react';
 import { useCart } from '../../../context/CartContext';
 
 const CartItem = ({ item }) => {
-  const { removeFromCart, addToCart } = useCart();
+  const { decreaseQuantity, removeFromCart, addToCart } = useCart();
 
   const handleRemoveOne = () => {
-    if (item.quantity > 1) {
-      removeFromCart(item.id);
-    } else {
-      removeFromCart(item.id);
-    }
-  };
+    decreaseQuantity(item.id);
+};
 
   return (
     <div

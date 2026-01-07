@@ -7,14 +7,15 @@ To Be Done
 - use metamask wallet as payment
 - customer didn't need customer and admin view
 - cart button in sidebar// done
-
+- gmm site (poy advise) as ref
+- user should have the cart memory -> may be backend stuff
 
 version 1 -> dont have product detail yet
 
 - need admin page to confige user -> may be user table -> add mew side bar + etc...
 - sort data in Manage product table
 - clear cart in cart context // done
-- learn how cart and login work...// to be done
+- learn how cart and login work...//done
 - integrate stripe // to be done
 
 

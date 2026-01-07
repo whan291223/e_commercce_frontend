@@ -4,7 +4,22 @@ import CartItem from './CartItem';
 import cartBlank from '../../../assets/cart-blank.svg';
 const CartSidebar = () => {
   const { cartItems, isCartOpen, toggleCart, cartTotal } = useCart();
+  const handleCheckout = async () => {
+  const res = await fetch("http://localhost:8000/payment/create-checkout-session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      items: cartItems.map(item => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+      }))
+    })
+  });
 
+  const data = await res.json();
+  window.location.href = data.url;
+  };
   return (
     <>
       {/* Overlay */}
@@ -28,7 +43,7 @@ const CartSidebar = () => {
           ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
       >
-        <div className="flex flex-col h-full p-6">
+        <div className="flex flex-col h-full p-6 min-h-0">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <button
@@ -44,27 +59,26 @@ const CartSidebar = () => {
             </div>
 
           {/* Items */}
-          <div className="flex-1">
+          <div className="flex-1 overflow-hidden min-h-0">
             {cartItems.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full space-y-4">
-                {/* Blank cart icon */}
+              <div className="flex flex-col items-center justify-center h-full space-y-4">
                 <img
-                    src={cartBlank}// adjust path if needed
-                    alt="Empty Cart"
-                    className="w-32 h-32 object-contain dark:invert"
+                  src={cartBlank}
+                  alt="Empty Cart"
+                  className="w-32 h-32 object-contain dark:invert"
                 />
                 <p className="text-gray-500 dark:text-gray-400 text-center text-lg">
-                    Your cart is empty.
+                  Your cart is empty.
                 </p>
-                </div>
+              </div>
             ) : (
-                <div className="space-y-4 overflow-y-auto h-full">
+              <div className="h-full min-h-0 space-y-4 overflow-y-auto pr-2 ">
                 {cartItems.map((item) => (
-                    <CartItem key={item.id} item={item} />
+                  <CartItem key={item.id} item={item} />
                 ))}
-                </div>
+              </div>
             )}
-            </div>
+          </div>
 
           {/* Footer */}
           {cartItems.length > 0 && (
@@ -83,6 +97,7 @@ const CartSidebar = () => {
                   text-white font-semibold
                   transition
                 "
+                onClick={handleCheckout}
               >
                 Pay with Stripe
               </button>
