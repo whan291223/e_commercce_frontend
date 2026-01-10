@@ -9,7 +9,8 @@ import api from './api/ApiService.jsx';
 import './App.css'
 import { CartProvider } from './context/CartContext'; 
 import CartSidebar from './components/customer/Cart/CartSidebar';
-
+import Success from "./routes/Success"
+import Cancel from "./routes/Cancel"
 // Redirects "/" to login or dashboard based on JWT and role
 function HomeRedirect() {
   const [redirect, setRedirect] = React.useState(null);
@@ -188,11 +189,10 @@ function App() {
     document.documentElement.classList.remove('dark');
   }
 
-  return (
+   return (
     <CartProvider>
       <Router>
         <Navbar />
-        {/* Add the Sidebar here so it can pop up on any page */}
         <CartSidebar /> 
         
         <main className="min-h-screen mx-auto p-4 dark:bg-gray-500">
@@ -200,6 +200,9 @@ function App() {
             <Route path="/" element={<HomeRedirect />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+
+            <Route path="/success" element={<Success />} />
+            <Route path="/cancel" element={<Cancel />} /> 
             <Route
               path="/admin"
               element={

@@ -1,5 +1,4 @@
-//manages the items in the cart, calculates totals, and handles adding/removing items.
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const CartContext = createContext();
 
@@ -8,13 +7,15 @@ export const CartProvider = ({ children }) => {
     const savedCart = localStorage.getItem("cart_items");
     return savedCart ? JSON.parse(savedCart) : [];
   });
+  
   useEffect(() => {
     localStorage.setItem("cart_items", JSON.stringify(cartItems));
   }, [cartItems]);
 
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const addToCart = (product) => {
+  // Memoize all functions to prevent unnecessary re-renders
+  const addToCart = useCallback((product) => {
     setCartItems((prev) => {
       const exists = prev.find((item) => item.id === product.id);
       if (exists) {
@@ -24,14 +25,14 @@ export const CartProvider = ({ children }) => {
       }
       return [...prev, { ...product, quantity: 1 }];
     });
-    setIsCartOpen(true); // Automatically open sidebar when item is added
-  };
+    setIsCartOpen(true);
+  }, []);
 
-  const removeFromCart = (id) => {
+  const removeFromCart = useCallback((id) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
+  }, []);
 
-  const decreaseQuantity = (id) => {
+  const decreaseQuantity = useCallback((id) => {
     setCartItems((prev) =>
       prev
         .map((item) =>
@@ -41,25 +42,38 @@ export const CartProvider = ({ children }) => {
         )
         .filter((item) => item.quantity > 0)
     );
-  };
+  }, []);
 
-  const toggleCart = () => setIsCartOpen(!isCartOpen);
+  const toggleCart = useCallback(() => {
+    setIsCartOpen(prev => !prev);
+  }, []);
 
-  const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCartItems([]);
     setIsCartOpen(false);
-  };
+  }, []); // ← This is the key fix!
+
+  const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   useEffect(() => {
-  const token = sessionStorage.getItem("jwt_token");
-  if (!token) {
-    setCartItems([]); // Wipe cart if token disappears
-    localStorage.removeItem("cart_items");
-  }
-}, []);
+    const token = sessionStorage.getItem("jwt_token");
+    if (!token) {
+      setCartItems([]);
+      localStorage.removeItem("cart_items");
+    }
+  }, []);
+
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, decreaseQuantity, isCartOpen, toggleCart, cartTotal, clearCart }}>
+    <CartContext.Provider value={{ 
+      cartItems, 
+      addToCart, 
+      removeFromCart, 
+      decreaseQuantity, 
+      isCartOpen, 
+      toggleCart, 
+      cartTotal, 
+      clearCart 
+    }}>
       {children}
     </CartContext.Provider>
   );

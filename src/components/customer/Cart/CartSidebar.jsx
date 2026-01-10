@@ -1,13 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../../../context/CartContext';
 import CartItem from './CartItem';
 import cartBlank from '../../../assets/cart-blank.svg';
+import UserApi from '../../../api/UserApi';
 
 const CartSidebar = () => {
   const { cartItems, isCartOpen, toggleCart, cartTotal } = useCart();
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
+  // 1️⃣ Fetch logged-in user
+  const token = sessionStorage.getItem('jwt_token');
+
+  useEffect(() => {
+    if (!token) return;
+
+    UserApi.getSession(token)
+      .then(res => setUser(res.data))
+      .catch(err => {
+        console.error('Failed to get user session', err);
+        setUser(null);
+      });
+  }, [token]);
+
+  // 2️⃣ Handle Stripe checkout
   const handleCheckout = async () => {
+    if (loading || cartItems.length === 0) return;
+    if (!user) {
+      alert("Please log in to checkout");
+      return;
+    }
+
     try {
+      setLoading(true);
+
       const res = await fetch(
         "http://localhost:8000/api/v1/payment/create-checkout-session",
         {
@@ -18,23 +44,28 @@ const CartSidebar = () => {
               product_id: item.id,
               quantity: item.quantity,
             })),
+            user_id: user.id, // ✅ dynamic user
           }),
         }
       );
-      if (!res.ok) {
-        throw new Error("Checkout failed");
-      }
+      const checkoutItems = cartItems.map(item => ({
+        product_id: item.id,
+        quantity: item.quantity,
+      }));
+
+      // 1️⃣ LOG TO CONSOLE HERE
+      console.log("Checkout Payload:", checkoutItems, user.id);
+      // console.log(cartItems, user)
+      if (!res.ok) throw new Error("Checkout failed");
 
       const data = await res.json();
-
-      if (!data.url) {
-        throw new Error("No checkout URL returned");
-      }
+      if (!data.url) throw new Error("No checkout URL returned");
 
       window.location.href = data.url;
     } catch (err) {
       console.error(err);
       alert("Unable to start checkout. Please try again.");
+      setLoading(false);
     }
   };
 
@@ -76,7 +107,7 @@ const CartSidebar = () => {
             </h2>
           </div>
 
-          {/* Items (SCROLL AREA) */}
+          {/* Items */}
           <div className="flex-1 overflow-hidden min-h-0">
             {cartItems.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full space-y-4">
@@ -110,7 +141,7 @@ const CartSidebar = () => {
 
               <button
                 onClick={handleCheckout}
-                disabled={cartItems.length === 0}
+                disabled={loading || !user}
                 className="
                   w-full py-3 rounded-lg
                   bg-indigo-600 hover:bg-indigo-700
@@ -119,8 +150,7 @@ const CartSidebar = () => {
                   transition
                 "
               >
-                Pay with Stripe 
-                {/* TODO add some thing to tell that site pay site is still loading */}
+                {loading ? "Redirecting to Stripe…" : user ? "Pay with Stripe" : "Log in to Pay"}
               </button>
             </div>
           )}

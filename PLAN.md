@@ -17,8 +17,14 @@ version 1 -> dont have product detail yet
 - clear cart in cart context // done
 - learn how cart and login work...//done
 - integrate stripe // halfway done
+- resturctur backend schema and payment // done
+- 🧾 Order saving + webhook
+- Stripe webhook → confirm payment // halfway -> finish back end ... stripe cli ... front end
+- Save order to database
+- Clear cart after success
+- do cancel page -> redirect to customer?
 
-
+Need to send poy at sunday with slide and video
 TODAY
 - 
 - Payment research -> use stripe it can also use Thai ATM and promtpay 
