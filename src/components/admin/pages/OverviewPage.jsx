@@ -1,21 +1,37 @@
 import React, { useState, useEffect, useCallback } from "react";
 import CategoryApi from "../../../api/CategoryApi";
 import ProductApi from "../../../api/ProductApi";
+import OrderApi from "../../../api/OrderApi";
 import AddCategoryModal from "../AddCategoryModal";
 import AddProductModal from "../AddProductModal";
 
 function OverviewPage() {
   const [categoryCount, setCategoryCount] = useState(0);
   const [productCount, setProductCount] = useState(0);
+  const [orderCount, setOrderCount] = useState(0);
+  const [revenue, setRevenue] = useState(0);
   const [isCategoryModalOpen, setCategoryModalOpen] = useState(false);
   const [isProductModalOpen, setProductModalOpen] = useState(false);
 
   const updateCounts = useCallback(async () => {
     try {
+      // Fetch categories and products
       const catRes = await CategoryApi.fetchCategories();
       const prodRes = await ProductApi.fetchProducts();
       setCategoryCount(catRes.data.length);
       setProductCount(prodRes.data.length);
+
+      // Fetch orders and calculate stats
+      const orderRes = await OrderApi.fetchOrders();
+      const orders = orderRes.data;
+      setOrderCount(orders.length);
+    //   setPaidOrders(orders.filter(o => o.status === "paid").length);
+    //   setPendingOrders(orders.filter(o => o.status === "pending").length);
+      setRevenue(
+        orders
+          .filter(o => o.status === "paid")
+          .reduce((sum, o) => sum + o.total_price_baths, 0)
+      );
     } catch (error) {
       console.error("Failed to update counts:", error);
     }
@@ -24,6 +40,8 @@ function OverviewPage() {
   useEffect(() => {
     updateCounts();
   }, [updateCounts]);
+
+  const formatPrice = (priceBaths) => `$${(priceBaths / 100).toFixed(2)}`;
 
   return (
     <div className="p-6">
@@ -73,7 +91,7 @@ function OverviewPage() {
                 Total Orders
               </h2>
               <p className="text-3xl font-bold mt-2 text-purple-600 dark:text-purple-400">
-                0
+                {orderCount}
               </p>
             </div>
             <div className="text-4xl">🛒</div>
@@ -87,7 +105,7 @@ function OverviewPage() {
                 Revenue
               </h2>
               <p className="text-3xl font-bold mt-2 text-orange-600 dark:text-orange-400">
-                $0
+                {formatPrice(revenue)}
               </p>
             </div>
             <div className="text-4xl">💰</div>

@@ -12,16 +12,16 @@ To Be Done
 
 version 1 -> dont have product detail yet
 
-- need admin page to confige user -> may be user table -> add mew side bar + etc...
-- sort data in Manage product table
+- need admin page to confige user -> may be user table -> add mew side bar + etc... // still don't have usermanage ment page
+- sort data in Manage product table //done
 - clear cart in cart context // done
 - learn how cart and login work...//done
 - integrate stripe // halfway done
 - resturctur backend schema and payment // done
 - Stripe webhook → confirm payment // done
-- Save order to database
-- Clear cart after success
-- do cancel page -> redirect to customer?
+- Save order to database //done -> need to do order status next
+- Clear cart after success // done
+- do cancel page -> redirect to customer? // done
 
 
  The Flow
@@ -35,12 +35,15 @@ version 1 -> dont have product detail yet
 6. User clicks "Return to Shop" → LOGIN REQUIRED ✅
    ↳ Why? To see their account, orders, continue shopping
 
+Order status
+pending   → created but unpaid
+paid      → webhook confirmed
+cancelled → user explicitly cancelled
+expired   → unpaid after time limit
 
 Need to send poy at sunday with slide and video
 TODAY
-- 
-- Payment research -> use stripe it can also use Thai ATM and promtpay 
-- stripe webhook
+
 
 
 
