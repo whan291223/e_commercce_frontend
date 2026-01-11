@@ -1,14 +1,14 @@
 To Be Done
 - 
-- Payment Feature
+- Payment Feature// done
 - sort the item based on somethng
-- customer should see the product first and when buy need to login
 - invalid credential should shown as -> Error username or password false
 - use metamask wallet as payment
 - customer didn't need customer and admin view
 - cart button in sidebar// done
 - gmm site (poy advise) as ref
 - user should have the cart memory -> may be backend stuff
+- user can add to cart firsh the login when checkout!
 
 version 1 -> dont have product detail yet
 
@@ -18,11 +18,23 @@ version 1 -> dont have product detail yet
 - learn how cart and login work...//done
 - integrate stripe // halfway done
 - resturctur backend schema and payment // done
-- 🧾 Order saving + webhook
-- Stripe webhook → confirm payment // halfway -> finish back end ... stripe cli ... front end
+- Stripe webhook → confirm payment // done
 - Save order to database
 - Clear cart after success
 - do cancel page -> redirect to customer?
+
+
+ The Flow
+```
+1. User browses shop (no login needed)
+2. User adds items to cart (no login needed)
+3. User clicks checkout → LOGIN REQUIRED ✅
+4. User completes payment on Stripe (takes 2-5 minutes)
+5. User returns to success page → NO LOGIN NEEDED ❌
+   ↳ Why? session_id is enough to verify payment
+6. User clicks "Return to Shop" → LOGIN REQUIRED ✅
+   ↳ Why? To see their account, orders, continue shopping
+
 
 Need to send poy at sunday with slide and video
 TODAY
