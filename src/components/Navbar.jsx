@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useCart } from "../context/CartContext"; // Import the hook
+import { useCart } from "../context/CartContext";
 
 function Navbar() {
   const navigate = useNavigate();
-  const { toggleCart, cartItems, clearCart } = useCart(); // Destructure what we need
+  const { toggleCart, cartItems, clearCart } = useCart();
 
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains("dark")
   );
 
-  // Calculate total items in cart for the badge
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const token = sessionStorage.getItem("jwt_token");
@@ -19,7 +18,7 @@ function Navbar() {
   const handleLogout = () => {
     sessionStorage.removeItem("jwt_token");
     clearCart();
-    navigate("/login");
+    navigate("/shop"); // ✅ Redirect to shop instead of login
   };
 
   const toggleDarkMode = () => {
@@ -36,20 +35,20 @@ function Navbar() {
       </div>
 
       <div className="flex gap-6 items-center">
-        {isLoggedIn && (
-          <NavLink
-            to="/customer"
-            end
-            className={({ isActive }) =>
-              `text-gray-300 hover:text-white transition-colors duration-200 ${
-                isActive ? "border-b-2 border-white pb-1" : ""
-              }`
-            }
-          >
-            Customer View
-          </NavLink>
-        )}
+        {/* ✅ Shop link always visible */}
+        <NavLink
+          to="/shop"
+          end
+          className={({ isActive }) =>
+            `text-gray-300 hover:text-white transition-colors duration-200 ${
+              isActive ? "border-b-2 border-white pb-1" : ""
+            }`
+          }
+        >
+          Shop
+        </NavLink>
 
+        {/* ✅ Admin link only for logged-in users */}
         {isLoggedIn && (
           <NavLink
             to="/admin"
@@ -60,33 +59,38 @@ function Navbar() {
               }`
             }
           >
-            Admin View
+            Admin
           </NavLink>
         )}
 
-        {/* --- START: CART BUTTON SECTION --- */}
-        {isLoggedIn && (
-          <button
-            onClick={toggleCart}
-            className="relative p-2 text-gray-300 hover:text-white transition-colors"
-            aria-label="Open Cart"
-          >
-            <span className="text-2xl">🛒</span>
-            {totalItems > 0 && (
-              <span className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
-                {totalItems}
-              </span>
-            )}
-          </button>
-        )}
-        {/* --- END: CART BUTTON SECTION --- */}
+        {/* ✅ Cart button always visible */}
+        <button
+          onClick={toggleCart}
+          className="relative p-2 text-gray-300 hover:text-white transition-colors"
+          aria-label="Open Cart"
+        >
+          <span className="text-2xl">🛒</span>
+          {totalItems > 0 && (
+            <span className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
+              {totalItems}
+            </span>
+          )}
+        </button>
 
-        {isLoggedIn && (
+        {/* ✅ Login/Logout buttons */}
+        {isLoggedIn ? (
           <button
             onClick={handleLogout}
             className="text-red-500 hover:text-red-600"
           >
             Logout
+          </button>
+        ) : (
+          <button
+            onClick={() => navigate("/login")}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+          >
+            Login
           </button>
         )}
 

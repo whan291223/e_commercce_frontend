@@ -24,7 +24,7 @@ const Cancel = () => {
       </p>
       
       <button
-        onClick={() => navigate("/customer")}
+        onClick={() => navigate("/shop")}
         className="mt-8 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors"
       >
         Return to Shop

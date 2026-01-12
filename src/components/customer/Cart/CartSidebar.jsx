@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // ✅ Add this
 import { useCart } from '../../../context/CartContext';
 import CartItem from './CartItem';
 import cartBlank from '../../../assets/cart-blank.svg';
@@ -8,28 +9,38 @@ const CartSidebar = () => {
   const { cartItems, isCartOpen, toggleCart, cartTotal } = useCart();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const navigate = useNavigate(); // ✅ Add this
 
-  // 1️⃣ Fetch logged-in user
   const token = sessionStorage.getItem('jwt_token');
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setUser(null);
+      return;
+    }
 
     UserApi.getSession(token)
       .then(res => setUser(res.data))
       .catch(err => {
         console.error('Failed to get user session', err);
-        setUser(null);
+        if (err.response?.status === 401) {
+          sessionStorage.removeItem("jwt_token");
+          setUser(null);
+        }
       });
   }, [token]);
 
-  // 2️⃣ Handle Stripe checkout
   const handleCheckout = async () => {
-    if (loading || cartItems.length === 0) return;
+    if (cartItems.length === 0) return;
+
+    // ✅ Require login for checkout
     if (!user) {
-      alert("Please log in to checkout");
+      toggleCart(); // Close cart
+      navigate("/login", { state: { from: "/shop", checkoutIntent: true } }); // Redirect to login
       return;
     }
+
+    if (loading) return;
 
     try {
       setLoading(true);
@@ -44,18 +55,11 @@ const CartSidebar = () => {
               product_id: item.id,
               quantity: item.quantity,
             })),
-            user_id: user.id, // ✅ dynamic user
+            user_id: user.id,
           }),
         }
       );
-      const checkoutItems = cartItems.map(item => ({
-        product_id: item.id,
-        quantity: item.quantity,
-      }));
 
-      // 1️⃣ LOG TO CONSOLE HERE
-      console.log("Checkout Payload:", checkoutItems, user.id);
-      // console.log(cartItems, user)
       if (!res.ok) throw new Error("Checkout failed");
 
       const data = await res.json();
@@ -141,7 +145,7 @@ const CartSidebar = () => {
 
               <button
                 onClick={handleCheckout}
-                disabled={loading || !user}
+                disabled={loading}
                 className="
                   w-full py-3 rounded-lg
                   bg-indigo-600 hover:bg-indigo-700
@@ -150,8 +154,14 @@ const CartSidebar = () => {
                   transition
                 "
               >
-                {loading ? "Redirecting to Stripe…" : user ? "Pay with Stripe" : "Log in to Pay"}
+                {loading ? "Redirecting to Stripe…" : user ? "Proceed to Checkout" : "Login to Checkout"}
               </button>
+              
+              {!user && (
+                <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-2">
+                  You'll be redirected to login
+                </p>
+              )}
             </div>
           )}
         </div>

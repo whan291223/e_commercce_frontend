@@ -1,7 +1,7 @@
 To Be Done
 - 
 - Payment Feature// done
-- sort the item based on somethng
+- sort the item based on somethng//done
 - invalid credential should shown as -> Error username or password false
 - use metamask wallet as payment
 - customer didn't need customer and admin view
@@ -9,6 +9,8 @@ To Be Done
 - gmm site (poy advise) as ref
 - user should have the cart memory -> may be backend stuff
 - user can add to cart firsh the login when checkout!
+- that user order
+
 
 version 1 -> dont have product detail yet
 
@@ -23,6 +25,8 @@ version 1 -> dont have product detail yet
 - Clear cart after success // done
 - do cancel page -> redirect to customer? // done
 
+- product detail
+-> show product detail and their relavant product -> have add to cart
 
  The Flow
 ```
