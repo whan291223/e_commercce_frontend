@@ -1,43 +1,26 @@
 To Be Done
 - 
-- Payment Feature// done
-- sort the item based on somethng//done
 - invalid credential should shown as -> Error username or password false
 - use metamask wallet as payment
-- customer didn't need customer and admin view
-- cart button in sidebar// done
 - gmm site (poy advise) as ref
 - user should have the cart memory -> may be backend stuff
-- user can add to cart firsh the login when checkout!
-- that user order
+- user will have a customer page which shown user order
 
+TOP3
+- Stock Management
+- Order status
+- User order histpry
 
-version 1 -> dont have product detail yet
+TOOO List
+- need admin page to confige user 
+- need a user order page for user or just send the data to email
+like lotus
+- Order History for customer
+- User profile to set their shipping address
+- product search
+- stock management ******
+- shipping
 
-- need admin page to confige user -> may be user table -> add mew side bar + etc... // still don't have usermanage ment page
-- sort data in Manage product table //done
-- clear cart in cart context // done
-- learn how cart and login work...//done
-- integrate stripe // halfway done
-- resturctur backend schema and payment // done
-- Stripe webhook → confirm payment // done
-- Save order to database //done -> need to do order status next
-- Clear cart after success // done
-- do cancel page -> redirect to customer? // done
-
-- product detail
--> show product detail and their relavant product -> have add to cart
-
- The Flow
-```
-1. User browses shop (no login needed)
-2. User adds items to cart (no login needed)
-3. User clicks checkout → LOGIN REQUIRED ✅
-4. User completes payment on Stripe (takes 2-5 minutes)
-5. User returns to success page → NO LOGIN NEEDED ❌
-   ↳ Why? session_id is enough to verify payment
-6. User clicks "Return to Shop" → LOGIN REQUIRED ✅
-   ↳ Why? To see their account, orders, continue shopping
 
 Order status
 pending   → created but unpaid
@@ -45,38 +28,38 @@ paid      → webhook confirmed
 cancelled → user explicitly cancelled
 expired   → unpaid after time limit
 
-Need to send poy at sunday with slide and video
-TODAY
 
+Claude recommendation
+Phase 1: Complete Core E-commerce (Next 1-2 weeks)
 
+✅ User Profile/Account Page
+✅ Order History for Customers
+✅ Product Search & Filters
+✅ Stock Management
+✅ Shipping Information in Orders
 
+Phase 2: Enhance UX (Week 3-4)
 
-On Admin Page
-- Remove Category // done
-- Remove Product    // done
-- Create product -> add image //done
-- Edit Product -> add image //done
+✅ Product Reviews/Ratings
+✅ Wishlist
+✅ Email Notifications
+✅ Better Image Uploads (multiple images)
+✅ Admin Analytics
 
-On Customer Page
-- Items name should not be duplicate //done -> just remove the dupl in admin page
-- Item should have pic // done
-- sort the item based on somethng
-- how buyer can buy
+Phase 3: Growth Features (Month 2)
 
-On login page
-- if user go to customer or admin route and nosession it should route to login page first //done
-- customer should see the product first and when buy need to login
-- invalid credential should shown as -> Error username or password false
+✅ Discount Codes
+✅ Guest Checkout
+✅ Product Recommendations
+✅ Abandoned Cart Recovery
 
-***minor
-Image Handler
-- image size
+## 🎨 Quick Wins for Better UX
 
-Change choose file button <- look weird>
+1. **Loading states** - Skeletons instead of spinners
+2. **Toast notifications** - "Added to cart!" messages
+3. **Breadcrumbs** - Home > Category > Product
+4. **Pagination** - For products (show 12 per page)
+5. **Footer** - Contact info, social links, policies
+6. **404 Page** - Custom error page
+7. **Product badges** - "New", "Sale", "Low Stock"
 
-
-
-
-if session expire it need to redirect to logins
-
-After Editing it change position... <- need the way to order based on something...(price, name, etc)

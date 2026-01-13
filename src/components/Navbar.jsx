@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -30,9 +31,12 @@ function Navbar() {
 
   return (
     <nav className="flex items-center justify-between px-6 py-3 bg-linear-to-r from-gray-600 via-gray-700 to-gray-800 dark:from-gray-800 dark:via-gray-900 dark:to-black shadow-md">
-      <div className="text-white text-2xl font-bold tracking-wide">
+      <Link
+        to="/shop"
+        className="text-white text-2xl font-bold tracking-wide cursor-pointer hover:opacity-80"
+      >
         E-Com-react
-      </div>
+      </Link>
 
       <div className="flex gap-6 items-center">
         {/* ✅ Shop link always visible */}
