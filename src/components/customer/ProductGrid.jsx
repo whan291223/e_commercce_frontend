@@ -73,7 +73,7 @@ function ProductGrid({ products }) {
 
                 <div className="flex items-center justify-between mt-4">
                   <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                    ${product.price?.toFixed(2)}
+                    ฿ {product.price?.toFixed(2)}
                   </p>
                   <span
                     className="

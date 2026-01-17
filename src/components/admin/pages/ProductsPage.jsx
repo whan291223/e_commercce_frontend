@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ProductApi from "../../../api/ProductApi";
-import AdminProductTable from "../AdminProductTable";
+import AdminProductTable from "./AdminProductTable";
 import EditProductModal from "../EditProductModal";
 import AddProductModal from "../AddProductModal";
 

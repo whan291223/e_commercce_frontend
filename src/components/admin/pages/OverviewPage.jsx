@@ -30,7 +30,7 @@ function OverviewPage() {
       setRevenue(
         orders
           .filter(o => o.status === "paid")
-          .reduce((sum, o) => sum + o.total_price_baths, 0)
+          .reduce((sum, o) => sum + o.total_price_bahts, 0)
       );
     } catch (error) {
       console.error("Failed to update counts:", error);
@@ -41,7 +41,7 @@ function OverviewPage() {
     updateCounts();
   }, [updateCounts]);
 
-  const formatPrice = (priceBaths) => `$${(priceBaths / 100).toFixed(2)}`;
+  const formatPrice = (pricebahts) => `฿ ${(pricebahts).toFixed(2)}`;
 
   return (
     <div className="p-6">

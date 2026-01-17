@@ -22,7 +22,7 @@ const CartItem = ({ item }) => {
           {item.name}
         </h4>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          ${item.price.toFixed(2)} × {item.quantity}
+          ฿ {item.price.toFixed(2)} × {item.quantity}
         </p>
       </div>
 

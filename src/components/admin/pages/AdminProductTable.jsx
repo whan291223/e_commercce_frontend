@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ProductApi from "../../api/ProductApi";
+import ProductApi from "../../../api/ProductApi";
 
 function AdminProductTable({ products, onRefresh, onEdit }) {
   const [sortBy, setSortBy] = useState("name_asc");
@@ -86,7 +86,7 @@ function AdminProductTable({ products, onRefresh, onEdit }) {
               >
                 <td className="px-4 py-3 dark:text-white">{product.name}</td>
                 <td className="px-4 py-3 dark:text-white">
-                  ${product.price.toFixed(2)}
+                  ฿ {product.price.toFixed(2)}
                 </td>
                 <td className="px-4 py-3 dark:text-white">
                   {product.category?.name || "-"}

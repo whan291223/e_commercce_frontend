@@ -52,15 +52,15 @@ function OrdersPage() {
       case "date_asc":
         return new Date(a.created_at || 0) - new Date(b.created_at || 0);
       case "price_desc":
-        return b.total_price_baths - a.total_price_baths;
+        return b.total_price_bahts - a.total_price_bahts;
       case "price_asc":
-        return a.total_price_baths - b.total_price_baths;
+        return a.total_price_bahts - b.total_price_bahts;
       default:
         return 0;
     }
   });
 
-  const formatPrice = (priceBaths) => `$${(priceBaths / 100).toFixed(2)}`;
+  const formatPrice = (pricebahts) => `฿ ${(pricebahts).toFixed(2)}`;
   const formatDate = (dateStr) => {
     if (!dateStr) return "N/A";
 
@@ -97,7 +97,7 @@ function OrdersPage() {
     paid: orders.filter(o => o.status === "paid").length,
     pending: orders.filter(o => o.status === "pending").length,
     revenue: orders.filter(o => o.status === "paid")
-      .reduce((sum, o) => sum + o.total_price_baths, 0)
+      .reduce((sum, o) => sum + o.total_price_bahts, 0)
   };
 
   if (loading) {
@@ -221,7 +221,7 @@ function OrdersPage() {
                       {formatDate(order.created_at)}
                     </td>
                     <td className="px-4 py-3 text-sm font-semibold text-gray-800 dark:text-gray-200">
-                      {formatPrice(order.total_price_baths)}
+                      {formatPrice(order.total_price_bahts)}
                     </td>
                     <td className="px-4 py-3">
                       {getStatusBadge(order.status)}
@@ -275,7 +275,7 @@ function OrdersPage() {
                                     Product ID: {item.product_id} × {item.quantity}
                                   </span>
                                   <span className="font-semibold text-gray-800 dark:text-gray-200">
-                                    {formatPrice(item.price_at_purchase_baths * item.quantity)}
+                                    {formatPrice(item.price_at_purchase_bahts * item.quantity)}
                                   </span>
                                 </div>
                               ))
