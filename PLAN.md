@@ -5,7 +5,9 @@ To Be Done
 - gmm site (poy advise) as ref
 - user should have the cart memory -> may be backend stuff
 - user will have a customer page which shown user order
+- if anyone can send data to backend <- gonna have a problem how to prevent them // when user create order use userid from auth session not from frontend
 
+- when user go to success page and cancel page should we reditrect to frontpage if the session is already gone
 TOP3
 - Stock Management
 - Order status

@@ -52,6 +52,19 @@ function Navbar() {
           Shop
         </NavLink>
 
+        {isLoggedIn && (
+          <NavLink
+            to="/my-orders"
+            className={({ isActive }) =>
+              `text-gray-300 hover:text-white transition-colors duration-200 ${
+                isActive ? "border-b-2 border-white pb-1" : ""
+              }`
+            }
+          >
+            My Orders
+          </NavLink>
+        )}
+
         {/* ✅ Admin link only for logged-in users */}
         {isLoggedIn && (
           <NavLink
@@ -66,7 +79,7 @@ function Navbar() {
             Admin
           </NavLink>
         )}
-
+        
         {/* ✅ Cart button always visible */}
         <button
           onClick={toggleCart}

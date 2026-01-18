@@ -11,6 +11,7 @@ import { CartProvider } from './context/CartContext';
 import CartSidebar from './components/customer/Cart/CartSidebar';
 import Success from "./routes/Success"
 import Cancel from "./routes/Cancel"
+import MyOrdersPage from './components/customer/MyOrdersPage.jsx';
 
 // Redirects "/" to login or dashboard based on JWT and role
 function HomeRedirect() {
@@ -133,7 +134,9 @@ function App() {
             {/* ✅ PUBLIC: Success/Cancel pages don't need login */}
             <Route path="/success" element={<Success />} />
             <Route path="/cancel" element={<Cancel />} /> 
-
+            <Route path="/my-orders" element={
+                <MyOrdersPage />
+            } />
             {/* ✅ PROTECTED: Admin only */}
             <Route
               path="/admin"

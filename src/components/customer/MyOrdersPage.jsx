@@ -23,7 +23,11 @@ function MyOrdersPage() {
       }
 
       const res = await OrderApi.fetchOrders(token);
-      setOrders(res.data);
+      // Filter out pending/expired orders - users only see paid orders
+      const confirmedOrders = res.data.filter(order => 
+        !["pending", "expired"].includes(order.status)
+      );
+      setOrders(confirmedOrders);
     } catch (err) {
       console.error("Failed to load orders:", err);
       if (err.response?.status === 401) {
@@ -34,24 +38,7 @@ function MyOrdersPage() {
     }
   };
 
-  // const handleCancelOrder = async (orderId) => {
-  //   const ok = window.confirm(
-  //     "Are you sure you want to cancel this order? This action cannot be undone."
-  //   );
-  //   if (!ok) return;
-
-  //   try {
-  //     const token = sessionStorage.getItem("jwt_token");
-  //     await OrderApi.cancelOrder(orderId, token);
-  //     loadOrders(); // Refresh orders
-  //     alert("Order cancelled successfully");
-  //   } catch (err) {
-  //     console.error("Failed to cancel order:", err);
-  //     alert(err.response?.data?.detail || "Failed to cancel order");
-  //   }
-  // };
-
-  const formatPrice = (pricebahts) => `฿ ${(pricebahts)}`;
+  const formatPrice = (pricebahts) => `฿${pricebahts.toLocaleString()}`;
   
   const formatDate = (dateStr) => {
     if (!dateStr) return "N/A";
@@ -64,40 +51,78 @@ function MyOrdersPage() {
     });
   };
 
+  // ✅ CLEARER STATUS LABELS FOR CUSTOMERS
   const getStatusBadge = (status) => {
     const styles = {
-      pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
-      paid: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+      paid: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
       processing: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
       shipped: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400",
-      delivered: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
+      delivered: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
       cancelled: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
-      expired: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
       refunded: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400"
     };
 
+    const labels = {
+      paid: "PAYMENT RECEIVED",           // Clear: You paid, we got it
+      processing: "PREPARING YOUR ORDER",  // Clear: We're packing it
+      shipped: "SHIPPED",                  // Clear: It's on the way
+      delivered: "DELIVERED",              // Clear: You got it
+      cancelled: "CANCELLED",
+      refunded: "REFUNDED"
+    };
+
     return (
-      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${styles[status] || styles.pending}`}>
-        {status.toUpperCase()}
+      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${styles[status] || styles.paid}`}>
+        {labels[status] || status.toUpperCase()}
       </span>
     );
   };
 
   const getStatusIcon = (status) => {
     const icons = {
-      pending: "⏳",
-      paid: "✅",
-      processing: "📦",
-      shipped: "🚚",
-      delivered: "🎉",
+      paid: "💳",        // Money/payment icon
+      processing: "📦",  // Package being prepared
+      shipped: "🚚",     // Truck delivering
+      delivered: "✅",   // Checkmark - completed
       cancelled: "❌",
-      expired: "⏰",
       refunded: "💰"
     };
     return icons[status] || "📋";
   };
 
-  // Filter orders
+  // ✅ CLEARER MESSAGES
+  const getStatusMessage = (order) => {
+    switch (order.status) {
+      case "paid":
+        return "✅ Payment received! We'll start preparing your order soon.";
+      case "processing":
+        return "📦 We're packing your items right now. Hang tight!";
+      case "shipped":
+        return order.shipped_at 
+          ? `🚚 Shipped on ${formatDate(order.shipped_at)}. On its way to you!`
+          : "🚚 Your order is on its way!";
+      case "delivered":
+        return order.delivered_at
+          ? `🎉 Delivered on ${formatDate(order.delivered_at)}. Enjoy!`
+          : "🎉 Your order has been delivered!";
+      case "cancelled":
+        return "❌ This order was cancelled.";
+      case "refunded":
+        return "💰 This order has been refunded to your account.";
+      default:
+        return "Order status updated.";
+    }
+  };
+
+  // ✅ CLEARER FILTER LABELS
+  const customerStatuses = [
+    { value: "all", label: "All Orders" },
+    { value: "paid", label: "Paid" },           // Show "paid" orders waiting to be prepared
+    { value: "processing", label: "Preparing" }, // Orders being packed
+    { value: "shipped", label: "Shipped" },      // On the way
+    { value: "delivered", label: "Delivered" }   // Completed
+  ];
+  
   const filteredOrders = orders.filter(order => {
     if (filterStatus === "all") return true;
     return order.status === filterStatus;
@@ -119,28 +144,28 @@ function MyOrdersPage() {
           My Orders
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mt-2">
-          Track and manage your order history
+          Track your purchases and delivery status
         </p>
       </div>
 
-      {/* Filter Tabs */}
+      {/* ✅ CLEARER FILTER TABS */}
       <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-        {["all", "pending", "paid", "processing", "shipped", "delivered", "cancelled"].map(status => (
+        {customerStatuses.map(({ value, label }) => (
           <button
-            key={status}
-            onClick={() => setFilterStatus(status)}
+            key={value}
+            onClick={() => setFilterStatus(value)}
             className={`
               px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all
-              ${filterStatus === status
+              ${filterStatus === value
                 ? 'bg-blue-600 text-white shadow-lg'
                 : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
               }
             `}
           >
-            {status === "all" ? "All Orders" : status.charAt(0).toUpperCase() + status.slice(1)}
-            {status !== "all" && (
+            {label}
+            {value !== "all" && (
               <span className="ml-2 text-xs">
-                ({orders.filter(o => o.status === status).length})
+                ({orders.filter(o => o.status === value).length})
               </span>
             )}
           </button>
@@ -156,10 +181,16 @@ function MyOrdersPage() {
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
             {filterStatus === "all" 
-              ? "You haven't placed any orders yet."
-              : `You don't have any ${filterStatus} orders.`
+              ? "You haven't placed any orders yet. Start shopping!"
+              : `You don't have any ${customerStatuses.find(s => s.value === filterStatus)?.label.toLowerCase()} orders.`
             }
           </p>
+          <button
+            onClick={() => window.location.href = "/shop"}
+            className="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium"
+          >
+            Browse Products
+          </button>
         </div>
       ) : (
         <div className="space-y-4">
@@ -181,7 +212,7 @@ function MyOrdersPage() {
                         {getStatusBadge(order.status)}
                       </div>
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        Placed on {formatDate(order.created_at)}
+                        Ordered on {formatDate(order.created_at)}
                       </p>
                     </div>
                   </div>
@@ -194,55 +225,53 @@ function MyOrdersPage() {
                   </div>
                 </div>
 
-                {/* Order Timeline */}
-                {order.status !== "pending" && order.status !== "cancelled" && (
-                  <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 mb-4 overflow-x-auto">
-                    <div className="flex items-center gap-1">
-                      <span className={order.paid_at ? "text-green-600 dark:text-green-400" : ""}>
-                        ✓ Paid
+                {/* Status Message */}
+                <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-l-4 border-blue-500">
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    {getStatusMessage(order)}
+                  </p>
+                </div>
+
+                {/* ✅ CLEARER PROGRESS BAR */}
+                {!["cancelled", "refunded"].includes(order.status) && (
+                  <div className="mb-4">
+                    <div className="flex justify-between text-xs mb-2">
+                      <span className={order.paid_at ? "text-yellow-600 dark:text-yellow-400 font-semibold" : "text-gray-400"}>
+                        💳 Paid
                       </span>
-                      {order.paid_at && (
-                        <span className="text-xs">({formatDate(order.paid_at)})</span>
-                      )}
+                      <span className={order.status === "processing" || order.shipped_at ? "text-blue-600 dark:text-blue-400 font-semibold" : "text-gray-400"}>
+                        📦 Preparing
+                      </span>
+                      <span className={order.shipped_at ? "text-indigo-600 dark:text-indigo-400 font-semibold" : "text-gray-400"}>
+                        🚚 Shipped
+                      </span>
+                      <span className={order.delivered_at ? "text-green-600 dark:text-green-400 font-semibold" : "text-gray-400"}>
+                        ✅ Delivered
+                      </span>
                     </div>
-                    {order.shipped_at && (
-                      <>
-                        <span>→</span>
-                        <div className="flex items-center gap-1">
-                          <span className="text-blue-600 dark:text-blue-400">✓ Shipped</span>
-                          <span className="text-xs">({formatDate(order.shipped_at)})</span>
-                        </div>
-                      </>
-                    )}
-                    {order.delivered_at && (
-                      <>
-                        <span>→</span>
-                        <div className="flex items-center gap-1">
-                          <span className="text-purple-600 dark:text-purple-400">✓ Delivered</span>
-                          <span className="text-xs">({formatDate(order.delivered_at)})</span>
-                        </div>
-                      </>
-                    )}
+                    <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-linear-to-r from-yellow-500 via-indigo-500 to-green-500 transition-all duration-500"
+                        style={{
+                          width: 
+                            order.delivered_at ? "100%" :
+                            order.shipped_at ? "75%" :
+                            order.status === "processing" ? "50%" :
+                            "25%"
+                        }}
+                      />
+                    </div>
                   </div>
                 )}
 
-                {/* Action Buttons */}
+                {/* Action Button */}
                 <div className="flex gap-3">
                   <button
                     onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
                     className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium text-sm"
                   >
-                    {expandedOrder === order.id ? "Hide Details" : "View Details"}
+                    {expandedOrder === order.id ? "Hide Items" : "View Items"}
                   </button>
-
-                  {/* {["pending", "paid"].includes(order.status) && (
-                    <button
-                      onClick={() => handleCancelOrder(order.id)}
-                      className="px-4 py-2 border border-red-600 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition font-medium text-sm"
-                    >
-                      Cancel Order
-                    </button>
-                  )} */}
                 </div>
               </div>
 
@@ -250,7 +279,7 @@ function MyOrdersPage() {
               {expandedOrder === order.id && (
                 <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 p-6">
                   <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-4">
-                    Order Items
+                    Items in this order
                   </h4>
                   <div className="space-y-3">
                     {order.items?.map((item, idx) => {
@@ -276,13 +305,10 @@ function MyOrdersPage() {
                               {item.product_name}
                             </h5>
                             <p className="text-sm text-gray-600 dark:text-gray-400">
-                              Quantity: {item.quantity}
+                              Qty: {item.quantity} × {formatPrice(item.price_at_purchase_bahts)}
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              {formatPrice(item.price_at_purchase_bahts)} each
-                            </p>
                             <p className="font-semibold text-gray-800 dark:text-gray-200">
                               {formatPrice(item.price_at_purchase_bahts * item.quantity)}
                             </p>
@@ -296,7 +322,7 @@ function MyOrdersPage() {
                   <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                        Total
+                        Total Amount
                       </span>
                       <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                         {formatPrice(order.total_price_bahts)}
@@ -314,3 +340,19 @@ function MyOrdersPage() {
 }
 
 export default MyOrdersPage;
+
+// ## ✅ Clear Status Explanation:
+
+// | Backend Status | Customer Sees | What It Means |
+// |---------------|---------------|---------------|
+// | `pending` | *(hidden)* | Not paid yet - don't show this |
+// | `paid` | **PAYMENT RECEIVED** 💳 | You paid, we received it, waiting to pack |
+// | `processing` | **PREPARING YOUR ORDER** 📦 | We're packing your items |
+// | `shipped` | **SHIPPED** 🚚 | Package is on the way to you |
+// | `delivered` | **DELIVERED** ✅ | You got it! |
+
+// ## Progress Bar:
+// ```
+// 💳 Paid → 📦 Preparing → 🚚 Shipped → ✅ Delivered
+//   25%       50%           75%         100%
+  
