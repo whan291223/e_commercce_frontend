@@ -55,7 +55,7 @@ const CartSidebar = () => {
               product_id: item.id,
               quantity: item.quantity,
             })),
-            user_id: user.id,
+            user_id: user.id, // TODO need to not send user id instead check from session
           }),
         }
       );

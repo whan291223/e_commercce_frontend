@@ -22,7 +22,6 @@ function CategoryList({ onCategorySelect }) {
     onCategorySelect(cat);
     console.log(cat)
   }
-// TODO still not done with blude highlighted category selected button 
   return (
     <div className="flex gap-2 flex-wrap bg-gray-100 dark:bg-gray-900 p-4 rounded-lg shadow-sm">
       <button

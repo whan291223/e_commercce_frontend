@@ -10,12 +10,15 @@ To Be Done
 - when user go to success page and cancel page should we reditrect to frontpage if the session is already gone
 TOP3
 - Stock Management
-- Order status
-- User order histpry
+- Order status //done
+- User order histpry //done
 
 TOOO List
-- need admin page to confige user 
-- need a user order page for user or just send the data to email
+- need admin page to confige user //dont need it yet
+- need a user order page for user or just send the data to email // done but need to also send the progress via email too
+- protect route sucess, cancel, my order when user try to go to it from the start
+- admin user click shiped
+
 like lotus
 - Order History for customer
 - User profile to set their shipping address
