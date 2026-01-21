@@ -44,18 +44,21 @@ const CartSidebar = () => {
 
     try {
       setLoading(true);
-
+      
       const res = await fetch(
-        "http://localhost:8000/api/v1/payment/create-checkout-session",
+        "http://localhost:8000/api/v1/payment/create-checkout-session", //TODO
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json" ,
+            Authorization: `Bearer ${token}` 
+          },
           body: JSON.stringify({
             items: cartItems.map(item => ({
               product_id: item.id,
               quantity: item.quantity,
             })),
-            user_id: user.id, // TODO need to not send user id instead check from session
+            // user_id: user.id, // TODO need to not send user id instead check from session
           }),
         }
       );

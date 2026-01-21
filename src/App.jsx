@@ -5,14 +5,13 @@ import AdminDashboard from './components/admin/AdminDashboard.jsx';
 import ShopPage from './components/customer/ShopPage.jsx';
 import Login from './components/Login.jsx';
 import Signup from './components/Signup.jsx';
-import api from './api/ApiService.jsx';
 import './App.css'
 import { CartProvider } from './context/CartContext'; 
 import CartSidebar from './components/customer/Cart/CartSidebar';
 import Success from "./routes/Success"
 import Cancel from "./routes/Cancel"
 import MyOrdersPage from './components/customer/MyOrdersPage.jsx';
-
+import UserApi from './api/UserApi.jsx';
 // Redirects "/" to login or dashboard based on JWT and role
 function HomeRedirect() {
   const [redirect, setRedirect] = React.useState(null);
@@ -23,20 +22,22 @@ function HomeRedirect() {
       setRedirect("/shop"); // ✅ Changed from /login to /shop
       return;
     }
-    api.get("/api/v1/users/my_session/", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => {
-        if (res.data.role === "admin") {
-          setRedirect("/admin");
-        } else {
-          setRedirect("/shop"); // ✅ Changed from /customer to /shop
-        }
-      })
-      .catch(() => {
-        setRedirect("/shop"); // ✅ Changed from /login to /shop
-      });
-  }, []);
+    const fetchSession = async () => {
+    try {
+      const res = await UserApi.getSession(token);
+
+      if (res.data.role === "admin") {
+        setRedirect("/admin");
+      } else {
+        setRedirect("/shop");
+      }
+      } catch {
+        setRedirect("/shop");
+      }
+    };
+
+      fetchSession();
+    }, []);
 
   if (redirect) return <Navigate to={redirect} replace />;
   return (
@@ -57,23 +58,24 @@ function AdminRoute({ children }) {
       setStatus("unauthenticated");
       return;
     }
-    api.get("/api/v1/users/my_session/", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => {
-        const role = res.data.role;
-        if (role === "admin") {
-          setStatus("allowed");
-        } else {
-          setStatus("forbidden");
-        }
-      })
-      .catch(() => {
+    const fetchSession = async () => {
+    try {
+      const res = await UserApi.getSession(token);
+
+      if (res.data.role === "admin") {
+        setStatus("allowed");
+      } else {
+        setStatus("forbidden");
+      }
+      } catch {
         sessionStorage.removeItem("jwt_token");
         setError("Your session has expired. Please log in again.");
         setStatus("unauthenticated");
-      });
-  }, []);
+      }
+    };
+
+      fetchSession();
+    }, []);
 
   if (status === "loading")
     return (

@@ -26,7 +26,7 @@ const Success = () => {
 
       try {
         const res = await fetch(
-          `http://localhost:8000/api/v1/payment/checkout-status?session_id=${sessionId}`
+          `http://localhost:8000/api/v1/payment/checkout-status?session_id=${sessionId}`//TODO
         );
 
         if (!res.ok) throw new Error("Backend error");
