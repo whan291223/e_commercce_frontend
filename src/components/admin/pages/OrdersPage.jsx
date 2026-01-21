@@ -30,7 +30,7 @@ function OrdersPage() {
     if (!ok) return;
 
     try {
-      await OrderApi.updateOrderStatus(orderId, newStatus); //TODO
+      await OrderApi.updateOrderStatus(orderId, newStatus); //TODO create update order status in backend server
       loadOrders(); // Refresh
     } catch (err) {
       alert("Failed to update order status");

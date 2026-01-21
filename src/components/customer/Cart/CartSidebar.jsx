@@ -46,7 +46,7 @@ const CartSidebar = () => {
       setLoading(true);
       
       const res = await fetch(
-        "http://localhost:8000/api/v1/payment/create-checkout-session", //TODO
+        "http://localhost:8000/api/v1/payment/create-checkout-session", //TODO make this api call
         {
           method: "POST",
           headers: { 
@@ -58,7 +58,6 @@ const CartSidebar = () => {
               product_id: item.id,
               quantity: item.quantity,
             })),
-            // user_id: user.id, // TODO need to not send user id instead check from session
           }),
         }
       );
