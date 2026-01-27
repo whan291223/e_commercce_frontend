@@ -35,7 +35,7 @@ function Navbar() {
         to="/shop"
         className="text-white text-2xl font-bold tracking-wide cursor-pointer hover:opacity-80"
       >
-        E-Com-react
+        Fay-May Merchandise
       </Link>
 
       <div className="flex gap-6 items-center">

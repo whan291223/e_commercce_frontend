@@ -12,6 +12,7 @@ import Success from "./routes/Success"
 import Cancel from "./routes/Cancel"
 import MyOrdersPage from './components/customer/MyOrdersPage.jsx';
 import UserApi from './api/UserApi.jsx';
+import ActorProfile from './components/actor_profile/ActorProfile.jsx';
 // Redirects "/" to login or dashboard based on JWT and role
 function HomeRedirect() {
   const [redirect, setRedirect] = React.useState(null);
@@ -129,6 +130,8 @@ function App() {
             <Route path="/" element={<HomeRedirect />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+
+            <Route path="/main" element={<ActorProfile />} />
 
             {/* ✅ PUBLIC: Anyone can browse the shop */}
             <Route path="/shop" element={<ShopPage />} />
