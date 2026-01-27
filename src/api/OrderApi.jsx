@@ -6,7 +6,7 @@ const OrderApi = {
   },
 
   updateOrderStatus: async (orderId, newStatus) => {
-    return await api.patch(`/api/v1/orders/${orderId}/status`, { new_status: newStatus });
+    return await api.patch(`/api/v1/orders/${orderId}/status?new_status=${newStatus}`);
   }
 };
 
