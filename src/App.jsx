@@ -110,7 +110,7 @@ function AdminRoute({ children }) {
 
   return children;
 }
-
+//TODO when first load should have download something right now it white and flash my eye
 function App() {
   const theme = localStorage.getItem('theme');
   if (theme === 'dark') {
