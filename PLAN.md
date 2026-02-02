@@ -12,7 +12,7 @@ TOP3
 - Stock Management
 - Order status //done
 - User order histpry //done
-
+- How to use cloudflare tunnel + how to deploy
 TOOO List
 - need admin page to confige user //dont need it yet
 - need a user order page for user or just send the data to email // done but need to also send the progress via email too
