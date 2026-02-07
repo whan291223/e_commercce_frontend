@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useCart } from "../../context/CartContext";
 import ProductDetailModal from "./ProductDetailModal";
 
-const API_BASE_URL = "http://localhost:8000";
 
 function ProductGrid({ products }) {
   const { addToCart } = useCart();
@@ -21,7 +20,7 @@ function ProductGrid({ products }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
         {products.map((product) => {
           const imageUrl = product.image_path
-            ? `${API_BASE_URL}/${product.image_path}`
+            ? `/${product.image_path}`
             : "/placeholder.png";
 
           return (

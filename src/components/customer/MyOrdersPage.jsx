@@ -283,10 +283,9 @@ function MyOrdersPage() {
                   </h4>
                   <div className="space-y-3">
                     {order.items?.map((item, idx) => {
-                      const imageUrl = item.product_image
+                      const imageUrl = item.product_image //TODO order api is not contain an image need to get product image via id
                         ? `${API_BASE_URL}/${item.product_image}`
                         : "/placeholder.png";
-
                       return (
                         <div
                           key={idx}
