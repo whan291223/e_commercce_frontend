@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // ✅ Add this
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../context/CartContext';
 import CartItem from './CartItem';
 import cartBlank from '../../../assets/cart-blank.svg';
@@ -9,7 +9,7 @@ const CartSidebar = () => {
   const { cartItems, isCartOpen, toggleCart, cartTotal } = useCart();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
-  const navigate = useNavigate(); // ✅ Add this
+  const navigate = useNavigate();
 
   const token = sessionStorage.getItem('jwt_token');
 
@@ -33,10 +33,9 @@ const CartSidebar = () => {
   const handleCheckout = async () => {
     if (cartItems.length === 0) return;
 
-    // ✅ Require login for checkout
     if (!user) {
-      toggleCart(); // Close cart
-      navigate("/login", { state: { from: "/shop", checkoutIntent: true } }); // Redirect to login
+      toggleCart();
+      navigate("/login", { state: { from: "/shop", checkoutIntent: true } });
       return;
     }
 
@@ -46,16 +45,16 @@ const CartSidebar = () => {
       setLoading(true);
       
       const res = await fetch(
-        "http://localhost:8000/api/v1/payment/create-checkout-session", //TODO make this api call
+        "http://localhost:8000/api/v1/payment/create-checkout-session",
         {
           method: "POST",
           headers: { 
-            "Content-Type": "application/json" ,
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}` 
           },
           body: JSON.stringify({
             items: cartItems.map(item => ({
-              product_id: item.id,
+              variant_id: item.variantId || item.selectedVariant?.id, // Send variant_id instead of product_id
               quantity: item.quantity,
             })),
           }),
@@ -128,8 +127,8 @@ const CartSidebar = () => {
               </div>
             ) : (
               <div className="h-full min-h-0 space-y-4 overflow-y-auto pr-2">
-                {cartItems.map(item => (
-                  <CartItem key={item.id} item={item} />
+                {cartItems.map((item, index) => (
+                  <CartItem key={`${item.id}-${item.variantId || index}`} item={item} />
                 ))}
               </div>
             )}
@@ -141,7 +140,7 @@ const CartSidebar = () => {
               <div className="flex justify-between text-lg font-medium mb-4">
                 <span className="text-gray-700 dark:text-gray-300">Total</span>
                 <span className="text-gray-900 dark:text-white">
-                  ${cartTotal.toFixed(2)}
+                  ฿{cartTotal.toFixed(2)}
                 </span>
               </div>
 

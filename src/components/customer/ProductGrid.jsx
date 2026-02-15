@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { useCart } from "../../context/CartContext";
 import ProductDetailModal from "./ProductDetailModal";
 
-
 function ProductGrid({ products }) {
-  const { addToCart } = useCart();
+  // Remove unused addToCart since we're now using the modal
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   if (!Array.isArray(products) || products.length === 0) {
@@ -15,6 +13,38 @@ function ProductGrid({ products }) {
     );
   }
 
+  // Helper function to get price range from variants
+  const getPriceDisplay = (product) => {
+    if (!product.variants || product.variants.length === 0) {
+      return "N/A";
+    }
+
+    const prices = product.variants.map(v => v.price);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+
+    if (minPrice === maxPrice) {
+      return `฿ ${minPrice.toFixed(2)}`;
+    }
+    return `฿ ${minPrice.toFixed(2)} - ฿ ${maxPrice.toFixed(2)}`;
+  };
+
+  // Helper function to check stock availability
+  const hasStock = (product) => {
+    if (!product.variants || product.variants.length === 0) {
+      return false;
+    }
+    return product.variants.some(v => v.stock > 0);
+  };
+
+  // Helper function to get total stock
+  const getTotalStock = (product) => {
+    if (!product.variants || product.variants.length === 0) {
+      return 0;
+    }
+    return product.variants.reduce((sum, v) => sum + v.stock, 0);
+  };
+
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
@@ -22,6 +52,9 @@ function ProductGrid({ products }) {
           const imageUrl = product.image_path
             ? `/${product.image_path}`
             : "/placeholder.png";
+          
+          const inStock = hasStock(product);
+          const totalStock = getTotalStock(product);
 
           return (
             <div
@@ -34,15 +67,25 @@ function ProductGrid({ products }) {
                 hover:shadow-lg dark:hover:shadow-gray-900/50
                 transition-shadow duration-200
                 flex flex-col justify-between
+                relative
               "
             >
+              {/* Out of Stock Badge */}
+              {!inStock && (
+                <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full z-10">
+                  Out of Stock
+                </div>
+              )}
+
               <div className="flex flex-col h-full">
                 {/* Product Image - Click to view details */}
                 {product.image_path && (
                   <img
                     src={imageUrl}
                     alt={product.name}
-                    className="w-full h-40 object-cover rounded-lg mb-4 cursor-pointer hover:opacity-90 transition-opacity"
+                    className={`w-full h-40 object-cover rounded-lg mb-4 cursor-pointer hover:opacity-90 transition-opacity ${
+                      !inStock ? "opacity-60" : ""
+                    }`}
                     onClick={() => setSelectedProduct(product)}
                     onError={(e) => {
                       e.currentTarget.src = "/placeholder.png";
@@ -62,6 +105,13 @@ function ProductGrid({ products }) {
                   {product.description}
                 </p>
 
+                {/* Variant info */}
+                {product.variants && product.variants.length > 0 && (
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    {product.variants.length} variant{product.variants.length > 1 ? 's' : ''} available
+                  </div>
+                )}
+
                 {/* View Details Link */}
                 <button
                   onClick={() => setSelectedProduct(product)}
@@ -72,7 +122,7 @@ function ProductGrid({ products }) {
 
                 <div className="flex items-center justify-between mt-4">
                   <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                    ฿ {product.price?.toFixed(2)}
+                    {getPriceDisplay(product)}
                   </p>
                   <span
                     className="
@@ -86,16 +136,27 @@ function ProductGrid({ products }) {
                   </span>
                 </div>
 
-                {/* Quick Add to Cart */}
+                {/* Stock indicator */}
+                {inStock && (
+                  <div className="text-xs text-green-600 dark:text-green-400 mt-2">
+                    {totalStock} units in stock
+                  </div>
+                )}
+
+                {/* Add to Cart - Opens modal to select variant */}
                 <button
-                  onClick={() => addToCart(product)}
-                  className="
-                    mt-5 w-full bg-blue-600 hover:bg-blue-700 
-                    text-white font-semibold py-2 px-4 rounded-lg 
+                  onClick={() => setSelectedProduct(product)}
+                  disabled={!inStock}
+                  className={`
+                    mt-5 w-full font-semibold py-2 px-4 rounded-lg 
                     transition-colors duration-200 flex items-center justify-center gap-2
-                  "
+                    ${inStock 
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                      : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                    }
+                  `}
                 >
-                  <span>🛒</span> Add to Cart
+                  <span>🛒</span> {inStock ? 'Select Options' : 'Out of Stock'}
                 </button>
               </div>
             </div>

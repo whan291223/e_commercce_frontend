@@ -13,11 +13,11 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'http://backend:8000', // use container name if in pod
+        target: 'http://localhost:8000', // use container name if in pod
         changeOrigin: true
       },
       '/static': {
-        target: 'http://backend:8000',
+        target: 'http://localhost:8000',
         changeOrigin: true
       }
     }
