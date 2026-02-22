@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import ProductDetailModal from "./ProductDetailModal";
 
 function ProductGrid({ products }) {
-  // Remove unused addToCart since we're now using the modal
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   if (!Array.isArray(products) || products.length === 0) {
@@ -13,37 +12,29 @@ function ProductGrid({ products }) {
     );
   }
 
-  // Helper function to get price range from variants
-  const getPriceDisplay = (product) => {
-    if (!product.variants || product.variants.length === 0) {
-      return "N/A";
-    }
+  const getActiveVariants = (product) =>
+    product.variants?.filter((v) => v.is_active) || [];
 
-    const prices = product.variants.map(v => v.price);
+  const getPriceDisplay = (product) => {
+    const active = getActiveVariants(product);
+    if (active.length === 0) return "N/A";
+
+    const prices = active.map((v) => v.price);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
 
-    if (minPrice === maxPrice) {
-      return `฿ ${minPrice.toFixed(2)}`;
-    }
-    return `฿ ${minPrice.toFixed(2)} - ฿ ${maxPrice.toFixed(2)}`;
+    return minPrice === maxPrice
+      ? `฿ ${minPrice.toFixed(2)}`
+      : `฿ ${minPrice.toFixed(2)} - ฿ ${maxPrice.toFixed(2)}`;
   };
 
-  // Helper function to check stock availability
-  const hasStock = (product) => {
-    if (!product.variants || product.variants.length === 0) {
-      return false;
-    }
-    return product.variants.some(v => v.stock > 0);
-  };
+  const hasStock = (product) =>
+    getActiveVariants(product).some((v) => v.stock > 0);
 
-  // Helper function to get total stock
-  const getTotalStock = (product) => {
-    if (!product.variants || product.variants.length === 0) {
-      return 0;
-    }
-    return product.variants.reduce((sum, v) => sum + v.stock, 0);
-  };
+  const getTotalStock = (product) =>
+    getActiveVariants(product).reduce((sum, v) => sum + v.stock, 0);
+
+  const getVariantCount = (product) => getActiveVariants(product).length;
 
   return (
     <>
@@ -52,9 +43,10 @@ function ProductGrid({ products }) {
           const imageUrl = product.image_path
             ? `/${product.image_path}`
             : "/placeholder.png";
-          
+
           const inStock = hasStock(product);
           const totalStock = getTotalStock(product);
+          const variantCount = getVariantCount(product);
 
           return (
             <div
@@ -78,7 +70,7 @@ function ProductGrid({ products }) {
               )}
 
               <div className="flex flex-col h-full">
-                {/* Product Image - Click to view details */}
+                {/* Product Image */}
                 {product.image_path && (
                   <img
                     src={imageUrl}
@@ -93,7 +85,7 @@ function ProductGrid({ products }) {
                   />
                 )}
 
-                {/* Product Name - Click to view details */}
+                {/* Product Name */}
                 <h3
                   className="text-lg font-semibold text-gray-800 dark:text-gray-100 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   onClick={() => setSelectedProduct(product)}
@@ -105,10 +97,10 @@ function ProductGrid({ products }) {
                   {product.description}
                 </p>
 
-                {/* Variant info */}
-                {product.variants && product.variants.length > 0 && (
+                {/* Variant info — only counts active */}
+                {variantCount > 0 && (
                   <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                    {product.variants.length} variant{product.variants.length > 1 ? 's' : ''} available
+                    {variantCount} variant{variantCount > 1 ? "s" : ""} available
                   </div>
                 )}
 
@@ -124,14 +116,7 @@ function ProductGrid({ products }) {
                   <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
                     {getPriceDisplay(product)}
                   </p>
-                  <span
-                    className="
-                      text-xs
-                      bg-gray-100 dark:bg-gray-700
-                      text-gray-700 dark:text-gray-200
-                      px-3 py-1 rounded-full
-                    "
-                  >
+                  <span className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-3 py-1 rounded-full">
                     {product.category?.name}
                   </span>
                 </div>
@@ -143,20 +128,21 @@ function ProductGrid({ products }) {
                   </div>
                 )}
 
-                {/* Add to Cart - Opens modal to select variant */}
+                {/* Add to Cart */}
                 <button
                   onClick={() => setSelectedProduct(product)}
                   disabled={!inStock}
                   className={`
-                    mt-5 w-full font-semibold py-2 px-4 rounded-lg 
+                    mt-5 w-full font-semibold py-2 px-4 rounded-lg
                     transition-colors duration-200 flex items-center justify-center gap-2
-                    ${inStock 
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                      : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                    ${
+                      inStock
+                        ? "bg-blue-600 hover:bg-blue-700 text-white"
+                        : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                     }
                   `}
                 >
-                  <span>🛒</span> {inStock ? 'Select Options' : 'Out of Stock'}
+                  <span>🛒</span> {inStock ? "Select Options" : "Out of Stock"}
                 </button>
               </div>
             </div>

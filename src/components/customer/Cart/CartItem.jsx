@@ -2,48 +2,40 @@ import React from 'react';
 import { useCart } from '../../../context/CartContext';
 
 const CartItem = ({ item }) => {
-  const { decreaseQuantity, removeFromCart, addToCart } = useCart();
+  const { decreaseQuantity, removeFromCart, increaseQuantity } = useCart();
 
-  const handleRemoveOne = () => {
-    decreaseQuantity(item.id);
-};
+  const variantLabel = [
+    item.selectedVariant?.option1_value,
+    item.selectedVariant?.option2_value,
+  ]
+    .filter(Boolean)
+    .join(" / ");
 
   return (
-    <div
-      className="
-        flex items-center justify-between
-        py-4
-        border-b border-gray-200 dark:border-gray-700
-      "
-    >
+    <div className="flex items-center justify-between py-4 border-b border-gray-200 dark:border-gray-700">
       {/* Item info */}
       <div>
         <h4 className="font-medium text-gray-900 dark:text-gray-100">
           {item.name}
         </h4>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+
+        {variantLabel && (
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+            {variantLabel}
+          </p>
+        )}
+
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
           ฿ {item.price.toFixed(2)} × {item.quantity}
         </p>
       </div>
 
       {/* Actions */}
       <div className="flex flex-col items-end space-y-2">
-        {/* Quantity controls */}
-        <div
-          className="
-            flex items-center
-            border border-gray-300 dark:border-gray-600
-            rounded-md
-          "
-        >
+        <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-md">
           <button
-            onClick={handleRemoveOne}
-            className="
-              px-3 py-1
-              text-gray-700 dark:text-gray-200
-              hover:bg-gray-100 dark:hover:bg-gray-800
-              transition
-            "
+            onClick={() => decreaseQuantity(item.variantId)}
+            className="px-3 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
           >
             −
           </button>
@@ -53,27 +45,16 @@ const CartItem = ({ item }) => {
           </span>
 
           <button
-            onClick={() => addToCart(item)}
-            className="
-              px-3 py-1
-              text-gray-700 dark:text-gray-200
-              hover:bg-gray-100 dark:hover:bg-gray-800
-              transition
-            "
+            onClick={() => increaseQuantity(item.variantId)}
+            className="px-3 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
           >
             +
           </button>
         </div>
 
-        {/* Remove all */}
         <button
-          onClick={() => removeFromCart(item.id)}
-          className="
-            text-xs
-            text-red-500 hover:text-red-600
-            dark:text-red-400 dark:hover:text-red-300
-            transition
-          "
+          onClick={() => removeFromCart(item.variantId)}
+          className="text-xs text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition"
         >
           Remove all
         </button>

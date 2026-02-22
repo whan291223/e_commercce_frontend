@@ -43,25 +43,33 @@ const CartSidebar = () => {
 
     try {
       setLoading(true);
-      
+
+      const payload = {
+        items: cartItems.map(item => ({
+          product_variant_id: item.variantId,
+          quantity: item.quantity,
+        })),
+      };
+
+      console.log("Checkout payload:", payload); // helpful for debugging
+
       const res = await fetch(
         "http://localhost:8000/api/v1/payment/create-checkout-session",
         {
           method: "POST",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}` 
+            Authorization: `Bearer ${token}`
           },
-          body: JSON.stringify({
-            items: cartItems.map(item => ({
-              variant_id: item.variantId || item.selectedVariant?.id, // Send variant_id instead of product_id
-              quantity: item.quantity,
-            })),
-          }),
+          body: JSON.stringify(payload),
         }
       );
 
-      if (!res.ok) throw new Error("Checkout failed");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        console.error("Checkout error response:", errorData);
+        throw new Error("Checkout failed");
+      }
 
       const data = await res.json();
       if (!data.url) throw new Error("No checkout URL returned");
@@ -127,8 +135,8 @@ const CartSidebar = () => {
               </div>
             ) : (
               <div className="h-full min-h-0 space-y-4 overflow-y-auto pr-2">
-                {cartItems.map((item, index) => (
-                  <CartItem key={`${item.id}-${item.variantId || index}`} item={item} />
+                {cartItems.map((item) => (
+                  <CartItem key={item.variantId} item={item} />
                 ))}
               </div>
             )}
@@ -157,7 +165,7 @@ const CartSidebar = () => {
               >
                 {loading ? "Redirecting to Stripe…" : user ? "Proceed to Checkout" : "Login to Checkout"}
               </button>
-              
+
               {!user && (
                 <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-2">
                   You'll be redirected to login
